@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    	<meta charset="utf-8">
+    	<title>Wetaxi | Online Taxi Booking</title>
+    	<link rel="stylesheet" href="/static/css/bootstrap.css" media="screen">
+      <link rel="stylesheet" href="/static/css/bootstrap.min.css" media="screen">
+      <link rel="stylesheet" href="/static/css/bootswatch.min.css">
+      <link rel="stylesheet" href="/static/css/bootstrapValidator.css" media="screen">
+      <link rel="stylesheet" href="/static/css/bootstrapValidator.min.css" media="screen">
+      <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+      <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="/static/js/bootstrapValidator.js"></script>
+      <script type="text/javascript" src="/static/js/bootstrapValidator.min.js"></script>
+      <script>
+      $(document).ready(function() {
+          $('#register_taxi_form').bootstrapValidator({
+              fields: {
+                  email: {
+                      validators: {
+                          notEmpty: {
+                              message: 'The email address is required and cannot be empty'
+                          },
+                          emailAddress: {
+                              message: 'The input is not a valid email address'
+                          }
+                      }
+                  },
+                  password: {
+                      validators: {
+                          notEmpty: {
+                              message: 'The password is required and cannot be empty'
+                          },
+                          stringLength: {
+                            min:'6',
+                            max:'32',
+                            message: 'Password strength too short'
+                          }
+                      }
+                  },
+                  mobile: {
+                      validators: {
+                          notEmpty: {
+                              message: 'The mobile number is required and cannot be empty'
+                          },
+                          phone: {
+                              message: 'The input is not a valid mobile number'
+                          }
+                      }
+                  }
+              }    
+          });
+          $('#loginForm').bootstrapValidator({
+              message: 'This value is not valid',
+              feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+              },
+              fields: {
+                email: {
+                  validators: {
+                      notEmpty: {
+                        message: 'The email is required'
+                      },
+                      emailAddress: {
+                        message: 'The input is not a valid email address'
+                      }
+                    }
+              },
+                password: {
+                  validators: {
+                      notEmpty: {
+                          message: 'The password is required'
+                    }
+                  }
+              }
+            }
+          });
+      });
+    </script>
+    </head>
+    <body>
+      <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+       		<div class="navbar-collapse collapse" id="navbar-main">
+        		<ul class="nav navbar-nav">
+          		<li><a href=""><img src="/static/images/Active-Facebook-Icon.png"></a></li>
+            	<li><a href=""><img src="/static/images/Active-Google-Plus-Icon.png"></a></li>
+          		<li><a href=""><img src="/static/images/Active-Twitter-Icon.png"></a></li>
+          		<li><a href=""><img src="/static/images/Active-YouTube-Icon.png"></a></li>
+          	</ul>
+					  <ul class="nav navbar-nav navbar-right">
+              <li><a href="" target="_blank"><span class="glyphicon glyphicon-phone-alt"><strong>Support(24/7) : 9995299833</strong></span> </a></li>
+          		<li><a href="" target="_blank">Terms of Service</a></li>
+          		<li><a href="" target="_blank">Privacy Policy</a></li>
+              <li><a href="" data-toggle="modal" data-target="#loginModal"><span class="glyphicon glyphicon-user"></span>Login</a></li>
+	          </ul>
+          </div>
+      	</div>
+    	</div>
+		
+    	<div class="container">
+			  <br>
+        <br>
+        	<div class="row">
+      			<div class="col-lg-12">
+              <div class="col-lg-6">
+          		  <img src="/static/images/logo.png" width="180px;" height="50px;">
+              </div>  
+              <div class="col-lg-6">
+                
+                <br>
+                <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+                  <li><a href="/" class="label label-success">Home</a></li>
+                  <li><a href="#profile" class="label label-success">About</a></li>
+                  <li><a href="#profile" class="label label-success">Blog</a></li>
+                  <li><a href="#profile" class="label label-success">Travels</a></li>
+                  <li><a href="#profile" class="label label-success">Packages</a></li>
+                  <li><a href="#profile" class="label label-success">Contact Us</a></li>
+                </ul> 
+              </div>
+            </div>  
+          </div> 
+          
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="col-lg-3">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="alert alert-warning bs-component">
+                    <form class="form-horizontal">
+                      <fieldset>
+                        <legend><i>TAXI SEARCH...</i></legend>
+                          <div class="form-group">
+                            <label for="inputState" class="col-lg-3 control-label">State</label>
+                            <div class="col-lg-9">
+                                <select class="form-control" id="select">
+                                  <option>Select</option>
+                                </select>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="inputDistrict" class="col-lg-3 control-label">District</label>
+                            <div class="col-lg-9">
+                                <select class="form-control" id="select">
+                                  <option>Select</option>
+                                </select>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="inputCircle" class="col-lg-3 control-label">Circle</label>
+                            <div class="col-lg-9">
+                                <select class="form-control" id="select">
+                                  <option>Select</option>
+                                </select>
+                            </div>
+                          </div>    
+                          <div class="form-group">
+                            <div class="col-lg-12">
+                              <button type="submit" class="btn btn-success btn-lg btn-block">Get Me A Taxi</button>
+                            </div>
+                          </div>
+                      </fieldset>
+                    </form>
+                  </div>
+                </div>
+              </div>  
+              <div class="row">
+                  <div class="col-lg-12">
+                    {% if user_exists %}
+                      <div class="alert alert-dismissable alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        User already regsitered!
+                      </div>
+                    {% endif %} 
+                    <div class="alert alert-warning bs-component">
+                      <form id="register_taxi_form" class="form-horizontal" action="/register/taxi/" method="POST">{% csrf_token %}
+                        <input type="hidden" name="user_type" value="1">
+                        <fieldset>
+                          <legend><i>TAXI REGISTER...</i></legend>
+                            <div class="form-group">
+                              <label for="inputEmail" class="col-lg-3 control-label">Email</label>
+                              <div class="col-lg-9">
+                                  <input type="text" class="form-control" id="inputEmail" placeholder="Email" name="email">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="inputPassword" class="col-lg-3 control-label">Password</label>
+                              <div class="col-lg-9">
+                                  <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="password">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="inputMobile" class="col-lg-3 control-label">Mobile</label>
+                              <div class="col-lg-9">
+                                  <input type="text" class="form-control" id="inputMobile" placeholder="Mobile" name="mobile">
+                              </div>
+                            </div>    
+                            <div class="form-group">
+                              <div class="col-lg-9">
+                                <button type="submit" class="btn btn-warning btn-lg btn-block">Register My Taxi</button>
+                              </div>
+                            </div>   
+                          </fieldset>
+                          </form>
+                      </div>
+                    </div>
+                </div> 
+            </div>
+          {% block content %}
+
+          {% endblock %}
+          <div class="row">
+            <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                      <h4 class="modal-title">Wetaxi | Login</h4>
+                  </div>
+
+                  <div class="modal-body">
+                    <!-- The form is placed inside the body of modal -->
+                    <form id="loginForm" method="POST" class="form-horizontal" action="/login/">{% csrf_token %}
+                      <div class="form-group">
+                          <label class="col-md-3 control-label">Email</label>
+                          <div class="col-md-5">
+                              <input type="text" class="form-control" name="email" />
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-md-3 control-label">Password</label>
+                          <div class="col-md-5">
+                              <input type="password" class="form-control" name="password" />
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-md-5 col-md-offset-3">
+                              <button type="submit" class="btn btn-primary">Login</button>
+                          </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+{% include 'footer.html' %}          

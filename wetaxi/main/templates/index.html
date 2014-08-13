@@ -1,0 +1,29 @@
+{% extends 'header.html' %}
+          {% block content %}
+          <div class="col-lg-9">
+            <img src="/static/images/wetaxi-banner2.png" width="750px;" height="300px;"><hr>
+              <h4><span class="label label-success"><img src="/static/images/new-icon.png"> Registered Travel Companies</span></h4>
+              <hr>
+              {% for user_profile in user_profiles %}
+                <div class="col-lg-4">
+                  <div class="panel panel-success text-center ">
+                    <div class="panel-heading">
+                      {{user_profile.user.first_name}}
+                      <p class="text-muted">{{user_profile.circle.circle}}</p>
+                    </div>  
+                    <div class="panel-body yellow">  
+                      {% with user_profile.taxiprofile_set.all|first as icon %}
+                        <img src="{{icon.icon_url}}" width="180px;" height="140px;">
+                      {% endwith %}
+                      <br> 
+                      <a href="/taxi/view/{{user_profile.pk}}/"><span class="label label-primary">Quick View</span></a>
+                    </div>  
+                  </div>
+                </div> 
+              {% endfor %}  
+            </div>
+          </div> 
+        </div>
+        {% endblock %}    
+
+       

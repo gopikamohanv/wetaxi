@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    	<meta charset="utf-8">
+    	<title>Wetaxi | Online Taxi Booking</title>
+    	<link rel="stylesheet" href="/static/css/bootstrap.css" media="screen">
+      <link rel="stylesheet" href="/static/css/bootstrap.min.css" media="screen">
+      <link rel="stylesheet" href="/static/css/bootswatch.min.css">
+      <link rel="stylesheet" href="/static/css/bootstrapValidator.css" media="screen">
+      <link rel="stylesheet" href="/static/css/bootstrapValidator.min.css" media="screen">
+      <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+      <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="/static/js/bootstrapValidator.js"></script>
+      <script type="text/javascript" src="/static/js/bootstrapValidator.min.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+            <div class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav">
+                  <li><a href="/taxi/dashboard/">Home</a></li>
+                    <li><a href="">About</a></li>
+                  <li><a href="">Contact</a></li>
+                  <li><a href="">Blog</a></li>
+                </ul>
+          <ul class="nav navbar-nav navbar-right">
+                  <li><a href="" target="_blank">Terms of Service</a></li>
+                  <li><a href="" target="_blank">Privacy Policy</a></li>
+                  <li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                </ul>
+              </div>
+          </div>
+      </div>
+      <div class="container">
+        <div class="row"><br>
+          <div class="col-lg-12">
+            <div class="col-lg-3">
+              <table class="table table-bordered table-hover">
+                <th><img src="/static/images/Taxi-icon.png"> My Taxi</th>
+                <tr><td><a href="/taxi/mylist/">Taxi List</a></td></tr>
+                <tr><td><a href="/taxi/rate/">Taxi Rate</a></td></tr>
+                <tr><td><a href="">Taxi Gallery</a></td></tr>
+              </table>
+              <table class="table table-bordered table-hover">
+                <th><img src="/static/images/calculator-icon.png">Bookings</th>
+                <tr><td><a href="">New Bookings</a></td></tr>
+                <tr><td><a href="">Booking Enquiries</a></td></tr>
+                <tr><td><a href="">Booking Status</a></td></tr>
+              </table>
+              <table class="table table-bordered table-hover">
+                <th><img src="/static/images/pilot-icon.png">Drivers</th>
+                <tr><td><a href="">Add Drivers</a></td></tr>
+                <tr><td><a href="">Assignments</a></td></tr>
+                <tr><td><a href="">Send Message</a></td></tr>
+              </table>
+              <table class="table table-bordered table-hover">
+                <th><img src="/static/images/maps-icon.png">Cirlces</th>
+                <tr><td><a href="">My Circles</a></td></tr>
+                <tr><td><a href="">Add New</a></td></tr>
+              </table>
+              <table class="table table-bordered table-hover">
+                <th><img src="/static/images/feedback-icon.png">Feedbacks & Ratings</th>
+                <tr><td><a href="">Feedbacks</a></td></tr>
+                <tr><td><a href="">Ratings</a></td></tr>
+              </table>   
+            </div>
+          <div class="col-lg-9">  
+            {% block content %}
+            {% endblock %} 
+          </div>
+        </div>
+      </div>
+  <div class="container">            
+    <div class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <ul>
+                <li><a href="" style="font-size:12px; color:grey;">Home</a></li>
+                <li><a href="" style="font-size:12px;color:grey;">About</a></li>
+                <li><a href="" style="font-size:12px;color:grey;">Blog</a></li>
+                <li><a href="" style="font-size:12px;color:grey;">Contact</a></li>
+              </ul>  
+            <li>
+              <ul>
+                <li><a href="" style="font-size:12px; color:grey;"target="_blank">Terms of Service</a></li>
+                <li><a href="" style="font-size:12px; color:grey;"target="_blank">Privacy Policy</a></li>
+                <li><a href="" style="font-size:12px; color:grey;">Cancellation Policy</a></li>
+                <li><a href="" style="font-size:12px; color:grey;">Refund Policy</a></li>
+              </ul>
+            </li> 
+            <li>
+              <span style="font-size:12px; color:grey;">Copyrights Wetaxi 2014. All Rights Reserved.</span>
+            </li>   
+          </ul>
+        </div>
+      </div>
+    </div> 
+  </div>  
+</body>
+</html>

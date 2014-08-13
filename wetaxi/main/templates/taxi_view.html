@@ -1,0 +1,42 @@
+{% extends 'header.html' %}
+
+{% block content %}
+	
+	<div class="col-lg-6">
+		<div class="panel panel-success">
+			<div class="panel panel-heading ">
+				<h5>{{user_profile.user.first_name}}</h5>
+			</div>
+			<div class="panel-body">
+				<p>
+					{{user_profile.address1}}<br>
+					<span class="glyphicon glyphicon-earphone"> {{user_profile.phone}}</span> | 
+					<span class="glyphicon glyphicon-envelope"> {{user_profile.user.email}}</span>
+					<br><br>
+					<a href="" class="label label-info">SEND EMAIL</a>
+					<a href="" class="label label-info">COMMENTS & RATINGS</a>		
+				<p>		
+			</div>
+			<hr>
+			{% for taxi_profile in taxi_profiles %}
+				<div class="row">
+					<div class="col-lg-4">
+						<img src="{{taxi_profile.icon_url}}" width="160px;" height="120px;">
+					</div>	
+					<div class="col-lg-8">
+						<p class="text-muted">
+							<strong>{{taxi_profile.display_name}} | {{taxi_profile.taxi_model}}</strong><br>
+							{{taxi_profile.taxi_number}}<br>
+							Seat Capacity : {{taxi_profile.seat_capacity}}<br><br>
+							<a href="">
+								<button class="btn btn-warning">Check Availability</button> <button class="btn btn-success">Book Now</button>
+							</a>	
+						</p>	
+					</div>
+				</div>
+			<hr>	
+			{% endfor %}
+		</div>	
+	</div>
+
+{% endblock %}

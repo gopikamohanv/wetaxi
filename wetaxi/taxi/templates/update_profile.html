@@ -1,0 +1,163 @@
+{% extends 'taxi_base.html' %}
+
+{% block content %}
+<script>
+$(document).ready(function() {
+    	$('#taxi_profile').bootstrapValidator({
+        	fields: {
+        		first_name: {
+        			validators: {
+        				notEmpty: {
+        					message : 'Name is required and cannot be empty'
+        				}
+        			}
+        		},
+        		address: {
+        			validators: {
+        				notEmpty: {
+        					message : 'Address is required and cannot be empty'
+        				}
+        			}
+        		},
+        		state: {
+        			validators: {
+        				greaterThan: {
+        					message : 'State is required and cannot be empty',
+        					value : 1
+        				}
+        			}
+        		},
+        		district: {
+        			validators: {
+        				greaterThan: {
+        					message : 'District is required and cannot be empty',
+        					value: 1
+        				}
+        			}
+        		},
+        		circle: {
+        			validators: {
+        				greaterThan: {
+        					message : 'Circle is required and cannot be empty', 
+        					value : 1
+        				}
+        			}
+        		}
+            }   
+    	});
+    });	
+
+function stateChanged(option)
+{
+	if (option==0)
+	{
+		return;
+	}
+	$.ajax({
+            type    : 'GET',
+            url     : '/ajax/district/',
+            cache   : false,
+            data    : "state=" + option,
+            success : function(data,textStatus)
+            {
+                $("#inputDistrict").html(data);
+            },
+            error   : function(data,textStatus){alert("Error connecting to Wetaxi Servers. Please check your internet connection and try again.");}
+        });
+}
+function districtChanged(option)
+{
+	if (option==0)
+	{
+		return;
+	}
+	$.ajax({
+            type    : 'GET',
+            url     : '/ajax/circle/',
+            cache   : false,
+            data    : "district=" + option ,
+            success : function(data,textStatus)
+            {
+                $("#inputCircle").html(data);
+            },
+            error   : function(data,textStatus){alert("Error connecting to Wetaxi Servers. Please check your internet connection and try again.");}
+        });
+}
+</script>
+<div class="row">
+	<div class="col-lg-12">
+        <h1 class="page-header">Update Profile</h1>
+    </div>
+</div>
+<div class="row">
+	<div class="col-lg-8">
+		{% if success %}
+			<div class="alert alert-success">
+				You have successfully updated your profile!
+			</div>
+		{% elif error %}
+			<div class="alert alert-danger">
+				Error in profile updation. Try again with valid data!
+			</div>
+		{% endif %}			
+		<div class="bs-component">
+    		<form id="taxi_profile" class="form-horizontal" action="/taxi/update/profile/" method="POST">{% csrf_token %}
+        		<input type="hidden" name="user_type" value="1">
+        		<input type="hidden" id="user" name="user" value="{{user_profile.pk}}">
+				<fieldset>
+					<legend>Profile</legend>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label for="inputFirstName" class="col-lg-3 control-label">Name</label>
+								<div class="col-lg-9">
+									<input type="text" class="form-control" id="inputFirstName" name="first_name" placeholder="Name" value="{{user_profile.user.first_name}}">
+								</div>
+					 		</div>
+							<div class="form-group">
+								<label for="inputAddress" class="col-lg-3 control-label">Address</label>
+								<div class="col-lg-9">
+									<div class="col-lg-9">
+										<textarea class="form-control" id="inputAddress" name="address" placeholder="address">{{user_profile.address1}}</textarea>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputState" class="col-lg-3 control-label">State</label>
+								<div class="col-lg-9">
+      								<select class="form-control" id="inputState" name="state" onChange="stateChanged(this.value)">
+      									<option value="0">Select</option>
+      									{% for state in states %}
+      										<option value="{{state.pk}}">{{state.state}}</option>
+      									{% endfor %}	
+      								</select>	
+    							</div>
+							</div>
+							<div class="form-group">
+								<label for="inputDistrict" class="col-lg-3 control-label">District</label>
+								<div class="col-lg-9">
+      								<select class="form-control" id="inputDistrict" name="district" onChange="districtChanged(this.value);">
+      									<option value="0">Select</option>
+      								</select>	
+    							</div>
+							</div>
+							<div class="form-group">
+								<label for="inputCircle" class="col-lg-3 control-label">Circle</label>
+								<div class="col-lg-9">
+      								<select class="form-control" id="inputCircle" name="circle">
+      									<option value="0">Select</option>
+      								</select>	
+    							</div>
+							</div>
+						</div>
+    					<div class="form-group">
+							<div class="col-lg-12">
+								<button type="submit" class="form-control btn btn-warning">Update Profile</button>
+							</div>
+						</div>   
+					</fieldset>
+      			</form>
+        	</div>
+        </div>	
+</div>	
+
+{% endblock %}

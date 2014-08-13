@@ -1,0 +1,255 @@
+{% extends 'taxi_base.html' %}
+
+{% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+    	$('#new_taxi_form').bootstrapValidator({
+        	fields: {
+        		taxitype: {
+        			validators: {
+        				notEmpty: {
+        					message : 'The taxi type is required and cannot be empty'
+        				},
+        				greaterThan: {
+        					message : 'The taxi type is required and cannot be empty',
+        					value : 1
+        				}
+        			}
+        		},
+        		name: {
+        			validators: {
+        				notEmpty: {
+        					message : 'The taxi name is required and cannot be empty'
+        				}
+        			}
+        		},
+        		model: {
+        			validators: {
+        				notEmpty : {
+        					message : 'Taxi model is required and cannot be empty'
+        				}
+        			}
+        		},
+        		taxinumber: {
+                	validators: {
+                    	notEmpty: {
+                        	message: 'The taxi number is required and cannot be empty'
+                        }
+                    }
+                },
+        		seats: {
+        			validators: {
+        				notEmpty: {
+        					message : 'Seat capacity is required and cannot be empty'
+        				}
+        			}
+        		},
+        		state: {
+        			validators: {
+        				greaterThan: {
+        					message : 'State is required and cannot be empty',
+        					value : 1
+        				}
+        			}
+        		},
+        		district: {
+        			validators: {
+        				greaterThan: {
+        					message : 'District is required and cannot be empty',
+        					value: 1
+        				}
+        			}
+        		},
+        		circle: {
+        			validators: {
+        				greaterThan: {
+        					message : 'Circle is required and cannot be empty', 
+        					value : 1
+        				}
+        			}
+        		}
+            }   
+    	});
+    });	
+	function stateChanged(option)
+	{
+		if (option==0)
+		{
+			return;
+		}
+		$.ajax({
+                type    : 'GET',
+                url     : '/ajax/district/',
+                cache   : false,
+                data    : "state=" + option,
+                success : function(data,textStatus)
+                {
+                    $("#inputDistrict").html(data);
+                },
+                error   : function(data,textStatus){alert("Error connecting to Wetaxi Servers. Please check your internet connection and try again.");}
+            });
+	}
+	function districtChanged(option)
+	{
+		if (option==0)
+		{
+			return;
+		}
+		$.ajax({
+                type    : 'GET',
+                url     : '/ajax/circle/',
+                cache   : false,
+                data    : "district=" + option ,
+                success : function(data,textStatus)
+                {
+                    $("#inputCircle").html(data);
+                },
+                error   : function(data,textStatus){alert("Error connecting to Wetaxi Servers. Please check your internet connection and try again.");}
+            });
+	}
+
+</script>
+<div class="row">
+        <!-- Page Header -->
+        <div class="col-lg-12">
+            <h1 class="page-header">New Taxi</h1>
+        </div>
+        <!--End Page Header -->
+</div>
+<div class="row">
+<div class="col-lg-9">
+	{% if success %}
+		<div class="alert alert-dismissable alert-success">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<strong>Well done!</strong> Your taxi successfully added into the list.<a href="/taxi/mylist/" class="alert-link">Click</a> to see the list.
+	    </div>
+	{% endif %}
+	<div class="bs-component">
+    	<form id="new_taxi_form" class="form-horizontal" action="/taxi/new/" method="POST">{% csrf_token %}
+        	<input type="hidden" name="user_type" value="1">
+			<fieldset>
+					<legend>Add My New Taxi</legend>
+						<div class="col-lg-12">
+							<div class="col-lg-12">
+  							<div class="form-group">
+    							<label for="inputTaxiType" class="col-lg-3 control-label">Taxi Type</label>
+    							<div class="col-lg-9">
+      								<select class="form-control" id="inputTaxiType" name="taxitype">
+      									<option value="0">Select</option>
+      									{% for taxi_type in taxi_types %}
+      										<option value="{{taxi_type.pk}}">{{taxi_type.taxi_type}}</option>
+      									{% endfor %}
+      								</select>
+    							</div>
+ 						 	</div>
+  							<div class="form-group">
+  								<label for="inputName" class="col-lg-3 control-label">Text to display</label>
+    							<div class="col-lg-9">
+      								<input type="text" class="form-control" id="inputName" placeholder="Text to display" name="name">
+    							</div>
+    						</div>
+    						<div class="form-group">
+  								<label for="inputModel" class="col-lg-3 control-label">Taxi Model</label>
+    							<div class="col-lg-9">
+      								<input type="text" class="form-control" id="inputModel" placeholder="Taxi Model" name="model">
+    							</div>
+    						</div>
+    						<div class="form-group">
+    							<label for="inputTaxiNumber" class="col-lg-3 control-label">Taxi Number</label>
+    							<div class="col-lg-9">
+      								<input type="text" class="form-control" id="inputNumber" placeholder="Taxi Number" name="taxinumber">
+    							</div>
+ 						 	</div>
+ 						 	<div class="form-group">
+    							<label for="inputSeatNumber" class="col-lg-3 control-label">Seat Capacity</label>
+    							<div class="col-lg-9">
+      								<input type="number" class="form-control" min="0" max="100" value="" name="seats">	
+    							</div>
+ 						 	</div>
+ 						 	<div class="form-group">
+    							<label for="inputState" class="col-lg-3 control-label">State</label>
+    							<div class="col-lg-9">
+      								<select class="form-control" id="inputState" name="state" onChange="stateChanged(this.value)">
+      									<option value="0">Select</option>
+      									{% for state in states %}
+      										<option value="{{state.pk}}">{{state.state}}</option>
+      									{% endfor %}	
+      								</select>
+    							</div>
+ 						 	</div>
+ 						 	<div class="form-group">
+    							<label for="inputDistrict" class="col-lg-3 control-label">District</label>
+    							<div class="col-lg-9">
+      								<select class="form-control" id="inputDistrict" name="district" onChange="districtChanged(this.value);">
+      									<option value="0">Select</option>
+      								</select>
+    							</div>
+ 						 	</div>
+ 						 	<div class="form-group">
+    							<label for="inputCircle" class="col-lg-3 control-label">Circle</label>
+    							<div class="col-lg-9">
+      								<select class="form-control" id="inputCircle" name="circle" >
+      									<option value="0">Select</option>
+      								</select>
+    							</div>
+ 						 	</div>
+    					</div>
+    				</div>
+    				<div class="form-group">
+						<div class="col-lg-12">
+							<button type="submit" class="btn btn-warning btn-lg btn-block">Add My Taxi</button>
+						</div>
+					</div>   
+			</fieldset>
+      	</form>
+    </div>
+</div>
+<div class="col-lg-3">
+            <div class="col-lg-12">
+                <a href="/taxi/new/">
+                    <div class="panel panel-primary text-center no-boder">
+                        <div class="panel-body yellow">
+                            <i class="fa fa-bar-chart-o fa-3x"></i>
+                        </div>
+                        <div class="panel-footer">
+                            <span class="panel-eyecandy-title">New Taxi
+                            </span>
+                        </div>
+                    </div>
+                </a>    
+            </div>
+
+            <div class="col-lg-12">
+                <a href="/taxi/features/">
+                    <div class="panel panel-primary text-center no-boder">
+                        <div class="panel-body blue">
+                            <i class="fa fa-pencil-square-o fa-3x"></i>
+                        </div>
+                        <div class="panel-footer">
+                            <span class="panel-eyecandy-title">Taxi Features
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>  
+
+            <div class="col-lg-12">
+                <a href="/taxi/icon/">
+                    <div class="panel panel-primary text-center no-boder">
+                        <div class="panel-body red">
+                            <i class="fa fa-thumbs-up fa-3x"></i>
+                        </div>
+                        <div class="panel-footer">
+                            <span class="panel-eyecandy-title">Taxi Icon
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>      
+
+        </div>					
+				
+</div>
+</div>
+{% endblock %}
+

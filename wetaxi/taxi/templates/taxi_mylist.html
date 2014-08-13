@@ -1,0 +1,72 @@
+{% extends 'taxi_base.html' %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+            <h1 class="page-header">My Taxi List</h1>
+    </div>
+</div>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="col-lg-9">
+			{% for taxi in taxi_list %}
+			<div class="col-lg-4">
+            	<div class="alert alert-warning text-center">
+                	{{taxi.display_name}}<br>
+                	<img src="{{taxi.icon_url}}" width="120px;" height="100px;">
+                	<p>{{taxi.taxi_number}}</p>
+                	<p>Model : {{taxi.taxi_model}}</p>
+                	<p>Passengers : {{taxi.seat_capacity}}</p>
+                	<a href="/taxi/edit/?id={{taxi.pk}}">Edit</a> | <a href="/taxi/remove/?id={{taxi.pk}}" onclick="return confirm('Are You Sure to Delete?');">Remove</a>
+            	</div>
+       		 </div>
+			{% endfor %}	
+		</div>
+		<div class="col-lg-3">
+			<div class="col-lg-12">
+				<a href="/taxi/new/">
+					<div class="panel panel-primary text-center no-boder">
+			        	<div class="panel-body yellow">
+			                <i class="fa fa-bar-chart-o fa-3x"></i>
+			            </div>
+			            <div class="panel-footer">
+			                <span class="panel-eyecandy-title">New Taxi
+			                </span>
+			            </div>
+	        		</div>
+	    		</a>    
+			</div>
+
+			<div class="col-lg-12">
+				<a href="/taxi/features/">
+					<div class="panel panel-primary text-center no-boder">
+			            <div class="panel-body blue">
+			                <i class="fa fa-pencil-square-o fa-3x"></i>
+			            </div>
+			            <div class="panel-footer">
+			                <span class="panel-eyecandy-title">Taxi Features
+			                </span>
+			            </div>
+	        		</div>
+    			</a>
+			</div>	
+
+			<div class="col-lg-12">
+				<a href="/taxi/icon/">
+					<div class="panel panel-primary text-center no-boder">
+			            <div class="panel-body red">
+			                <i class="fa fa-thumbs-up fa-3x"></i>
+			            </div>
+			            <div class="panel-footer">
+			                <span class="panel-eyecandy-title">Taxi Icon
+			                </span>
+			            </div>
+			        </div>
+		    	</a>
+			</div>		
+
+		</div>
+	</div>
+</div>
+
+{% endblock %}
