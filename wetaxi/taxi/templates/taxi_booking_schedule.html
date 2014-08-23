@@ -100,7 +100,7 @@
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Taxi</label>
                     <div class="col-sm-10">
-                      <input type="email" class="form-control" id="taxiname" readonly placeholder="">
+                      <input type="text" class="form-control" id="taxiname" readonly placeholder="">
                     </div>
                   </div>
                   <div class="form-group" id="startDateControlGroup">
@@ -122,14 +122,27 @@
                       </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">To</label>
+                    <label class="col-sm-2 control-label">Route</label>
                     <div class="col-sm-10">
-                      <select id="passenger" class="form-control" required>
-                        <option value="">Select Passenger</option>
-                        {% for passenger in passengers %}
-                          <option value="{{passenger.user.id}}">{{passenger.user.first_name}}</option>
-                        {% endfor %}
-                      </select>
+                      <textarea class="form-control" id="route" placeholder="Travel Route" required></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Contact Person</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="person" placeholder="Person Name" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Contact Number</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="number" placeholder="Mobile/Landline" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Contact Address</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" id="address" placeholder="Address" required></textarea>
                     </div>
                   </div>
                   <div class="form-group">
@@ -177,14 +190,15 @@
       $('#taxiName').val($(this).attr('Name'));
       var calendar = $('#calendar').calendar({events_source: '/taxi/schedule/events/?taxi=' + taxi, tmpl_path: '/static/js/calendar/tmpls/'});
 		});
-    function hello(){
+    function hello(date){
       $('#bookingModal').modal({
         backdrop:'static',
         keyboard: false
       }); 
+      $('#fromDate').val(date);
+      $('#toDate').val('');
       $('#taxiname').val($('#taxiName').val());
       $('#calendarModal').modal('hide');
-      $('#bookingModal').css('margin-top', '150px')
     }
     $('#bookingModal').on('hidden.bs.modal', function() {
       $('#calendarModal').modal('show');
@@ -200,13 +214,16 @@
         alert('End Date is empty!!');
         return false;
       }
-      var passenger = $('#passenger').val();
+      var person = $('#person').val();
+      var number = $('#number').val();
+      var address = $('#address').val();
+      var route = $('#route').val();
       var taxi = $('#taxiId').val();
       var csrf = $('#csrf').val();
       $.ajax({
         url: '/taxi/booking/' + taxi + '/',
         type: 'POST',
-        data: {from:fromDate, to:toDate, passenger:passenger, csrfmiddlewaretoken:csrf},
+        data: {from:fromDate, to:toDate, person:person, number:number, address:address, route:route, csrfmiddlewaretoken:csrf},
       })
       .done(function(data) {
         if (data.status === false){
