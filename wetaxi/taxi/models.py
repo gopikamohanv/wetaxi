@@ -20,6 +20,9 @@ class TaxiProfile(models.Model):
 	feature = models.TextField()
 	date_registered = models.DateTimeField(auto_now=True)
 
+	def __unicode__(self):
+		return str(self.display_name) 
+
 class TaxiRate(models.Model):
 	taxi = models.ForeignKey(TaxiProfile)
 	rate = models.CharField(max_length=100, null=True, blank=True)
@@ -28,6 +31,18 @@ class TaxiRate(models.Model):
 class TaxiGellery(models.Model):
 	taxi = models.ForeignKey(TaxiProfile)
 	image_url = models.URLField(max_length=255)	
+
+class TaxiBookingSchedule(models.Model):
+	taxi = models.ForeignKey(TaxiProfile)
+	booking_from_date = models.DateTimeField()
+	booking_to_date = models.DateTimeField()
+	booked_by = models.ForeignKey(UserProfile)
+	booking_id = models.SlugField(db_index=True, unique=True)
+
+	def __unicode__(self):
+		return str(self.taxi) + ' - ' + str(self.booked_by) + ' - (' + str(self.booking_from_date.date()) + '---' + str(self.booking_to_date.date()) + ')'
+
+
 
 
 		
