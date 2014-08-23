@@ -131,6 +131,7 @@ def logout(request):
 
 def taxi_view(request,pk):
 	response = {}
+	response.update(csrf(request))
 
 	user_profile = get_object_or_404(UserProfile, pk=pk)
 	response.update({'user_profile': user_profile})
