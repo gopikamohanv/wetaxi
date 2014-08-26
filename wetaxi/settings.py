@@ -65,7 +65,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wetaxi',
         'USER':'root',
-        'PASSWORD':'root123',
+        'PASSWORD':'',
         'HOST':'',
         'PORT':'',
     }
