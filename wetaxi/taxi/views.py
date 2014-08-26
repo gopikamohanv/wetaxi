@@ -274,14 +274,15 @@ def taxi_schedule_events(request):
 		x['end'] = int(time.mktime((from_date - timedelta(days=1)).timetuple()) * 1000)
 		booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi)
 		if booked:
-			x['title'] = 'Booked (' + str(datetime.datetime.strftime(booked[0].booking_from_date, '%d %b %H:%M')) + ' to ' + str(datetime.datetime.strftime(booked[0].booking_to_date, '%d %b %H:%M')) + ')'
+			x['title'] = 'Booked (' + str(datetime.datetime.strftime(booked[0].booking_from_date, '%d %b %I:%M %p')) + ' to ' + str(datetime.datetime.strftime(booked[0].booking_to_date, '%d %b %I:%M %p')) + ')'
 			x['class'] = 'event-important'
 		elif from_date < datetime.datetime.today():
-			x['title'] = 'No Booking'
+			from_date = from_date + timedelta(days=1)
+			continue
 		else:
 			x['title'] = 'Booking Available'
 			x['class'] = 'event-success'
-			x['url'] = 'javascript:hello()'
+			x['url'] = 'javascript:hello(\'' + str(from_date.strftime('%m/%d/%Y')) + ' 10:00 AM \')'
 		result['result'].append(x)
 
 		from_date = from_date + timedelta(days=1)
@@ -310,7 +311,10 @@ def taxi_booking(request, pk):
 	else:
 		raise Http404()
 
-	passenger = get_object_or_404(UserProfile, user__id=request.POST['passenger'])
+	person = request.POST['person']
+	number = request.POST['number']
+	address = request.POST['address']
+	route = request.POST['route']
 
 	from_date = from_date.split(' ')
 	from_date = str(from_date[0]) + ' ' + str(from_date[1]) + ' ' + str(from_date[2])
@@ -352,7 +356,7 @@ def taxi_booking(request, pk):
 		)
 
 
-	TaxiBookingSchedule.objects.create(taxi=taxi, booking_from_date=from_date, booking_to_date=to_date, booked_by=passenger, booking_id=booking_id)
+	TaxiBookingSchedule.objects.create(taxi=taxi, booking_from_date=from_date, booking_to_date=to_date, contact_person=person, contact_number=number, contact_address=address, route=route, booking_id=booking_id)
 	return HttpResponse(
 		json.dumps(
 				{'status':True, 'message':'Success: Booking Completed Successfully!!'}
