@@ -5,7 +5,7 @@
 	<div class="col-lg-6">
 		<div class="panel panel-success">
 			<div class="panel panel-heading ">
-				<h5>{{user_profile.user.first_name}}</h5>
+				<h5><font style="text-transform: uppercase;">{{user_profile.user.first_name}}</font></h5>
 			</div>
 			<div class="panel-body">
 				<p>
@@ -26,6 +26,7 @@
 					<div class="col-lg-8">
 						<p class="text-muted">
 							<strong>{{taxi_profile.display_name}} | {{taxi_profile.taxi_model}}</strong><br>
+							{{taxi_profile.owner.user.first_name}}<br>
 							{{taxi_profile.taxi_number}}<br>
 							Seat Capacity : {{taxi_profile.seat_capacity}}<br><br>
 							<a href="">

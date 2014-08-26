@@ -1,0 +1,27 @@
+{% extends 'header.html' %}
+
+
+{% block content %}
+	<div class="col-lg-9">
+		<div class="alert alert-info">
+			Search Result for Travel Companies in <strong><i>{{circle.circle}}</i></strong>
+		</div>
+		{% for user_profile in user_profiles %}
+            <div class="col-lg-4">
+              <div class="panel panel-success text-center ">
+                <div class="panel-heading">
+                  <font style="text-transform: uppercase;">{{user_profile.user.first_name}}</font>
+                  <p class="text-muted">{{user_profile.circle.circle}}</p>
+                </div>  
+                <div class="panel-body yellow">  
+                  {% with user_profile.taxiprofile_set.all|first as icon %}
+                    <img src="{{icon.icon_url}}" width="180px;" height="140px;">
+                  {% endwith %}
+                  <br> 
+                  <a href="/taxi/view/{{user_profile.pk}}/"><span class="label label-primary">Quick View</span></a>
+                </div>  
+              </div>
+            </div> 
+        {% endfor %}
+	</div>
+{% endblock %}

@@ -53,6 +53,7 @@ def index(request):
 	response = {}
 	response.update(csrf(request))
 	response.update({'user_profiles': UserProfile.objects.filter(user_type='1').order_by('-pk')[:10]})
+	response.update({'states': State.objects.all()})
 	return render_to_response('index.html', response)
 
 def register_taxi(request):
@@ -132,11 +133,27 @@ def logout(request):
 def taxi_view(request,pk):
 	response = {}
 	response.update(csrf(request))
+	
+	response.update({'states': State.objects.all()})
 
 	user_profile = get_object_or_404(UserProfile, pk=pk)
 	response.update({'user_profile': user_profile})
 	response.update({'taxi_profiles': TaxiProfile.objects.filter(owner=user_profile)})
 	return render_to_response('taxi_view.html', response)
+
+def search_taxi(request):
+	response = {}
+	response.update({'states': State.objects.all()})
+
+	if 'circle' in request.GET and request.GET['circle']:
+		circle = request.GET['circle']
+	else:
+		raise Http404	
+
+	circle_obj = get_object_or_404(Circle, pk=circle)
+	response.update({'circle': circle_obj})
+	response.update({'user_profiles': UserProfile.objects.filter(circle=circle_obj)})
+	return render_to_response('taxi_list.html', response)	
 	
 				
 
