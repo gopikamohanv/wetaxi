@@ -15,7 +15,13 @@ import datetime
 import time
 from datetime import timedelta
 
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
+
 from django.db.models import Q
+
+key = 'AKIAJ4BESZTCA2ITP7BA'
+secretkey = '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'
 
 def taxi_check(user):
 	userprofile = get_object_or_404(UserProfile, user=user)
@@ -115,19 +121,47 @@ def taxi_icon(request):
 				return HttpResponseRedirect('/taxi/icon/')
 
 			if 'taxi_icon' in request.FILES and request.FILES['taxi_icon']:
-				taxi_icon = request.FILES['taxi_icon']
+				uploaded_file = request.FILES['taxi_icon']
 			else:
 				return HttpResponseRedirect('/taxi/icon/')
-			basename, extension = os.path.splitext(taxi_icon.name)			
-			filename =  os.path.abspath('wetaxi')+'/static/images/' + basename + extension
+
+			basename, extension = os.path.splitext(uploaded_file.name)
+			ext = extension.lower()
+			if not ext == '.png' and not ext == '.jpg' and not ext == '.jpeg':
+				response.update({'image_type_error':True}) 
+				return render_to_response('taxi_icon.html', response)
+
+			new_name = str(datetime.datetime.now().strftime("%b%d%Y%H%M%S"))
+			filename = new_name
+			key_name = filename + extension     # For use with Amazon
+			filename = '/tmp/' + filename + extension
 			destination = open(filename, 'wb+')
-			for chunk in taxi_icon.chunks():
+			for chunk in uploaded_file.chunks():
 				destination.write(chunk)
-			destination.close()	
+			destination.close()
+			size = os.path.getsize(filename)
+			size = float((size / 1024) / 1024)
+			if size > 2:
+				response.update({'image_size_error':True}) 
+				return render_to_response('taxi_icon.html', response)
+
+			#Write the file to Amazon and generate the link
+			try:
+				conn = S3Connection(key, secretkey) # DO NOT LOOSE THIS KEY!!!!!
+				bucket = conn.get_bucket('uploads.wetaxi.in')
+				k = Key(bucket)
+				k.key = key_name
+				k.set_contents_from_filename(filename)
+				k.set_acl('public-read')
+			except:
+				return HttpResponse('One of our servers has encountered an error and needs to close. We are sorry for your inconvenience. Please try agin later')
+			else:
+				img_url = 'http://uploads.wetaxi.in.s3.amazonaws.com/' + key_name
+
 			user_profile = get_object_or_404(UserProfile, user=request.user)
 			try:
 				taxi_profile = get_object_or_404(TaxiProfile, owner=user_profile, taxi_number=taxi_number)
-				taxi_profile.icon_url = '/static/images/'+ basename + extension
+				taxi_profile.icon_url = img_url
 				taxi_profile.save()
 			except:
 				return HttpResponse('You have added more than one taxi')	
