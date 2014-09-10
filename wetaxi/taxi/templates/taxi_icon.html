@@ -68,6 +68,16 @@ function typeSelected(option)
 <div class="row">
 	<div class="col-lg-12">
 		<div class="col-lg-9">
+			{% if image_type_error %}
+				<div class="alert alert-danger">
+					Please select a valid image file!!
+				</div>
+			{% endif %}
+			{% if image_size_error %}
+				<div class="alert alert-success">
+					Image size should be less than 2Mb!!
+				</div>
+			{% endif %}
 			{% if success %}
 				<div class="alert alert-success">
 					Successfully added Icon for your taxi!
