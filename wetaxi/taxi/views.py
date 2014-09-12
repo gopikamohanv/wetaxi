@@ -213,10 +213,39 @@ def taxi_rate(request):
 			else:
 				return HttpResponseRedirect('/taxi/rate/')
 			
-			if 'taxitype' in request.POST and request.POST['taxitype']:
-				taxitype = request.POST['taxitype']
+			if 'taxi' in request.POST and request.POST['taxi']:
+				taxi = request.POST['taxi']
 			else:
 				return HttpResponseRedirect('/taxi/rate/')
+
+			if 'taxi_rate' in request.POST and request.POST['taxi_rate']:
+				taxi_rate = request.POST['taxi_rate']
+			else:
+				return HttpResponseRedirect('/taxi/rate/')
+
+			taxi_obj = get_object_or_404(TaxiProfile, taxi_number=taxi)
+			try:
+				rate = TaxiRate()
+				rate.taxi = taxi_obj
+				rate.rate = taxi_rate
+				rate.save()	
+			except:
+				raise Http404
+			else:
+				response.update({'success':True})
+				return render_to_response('taxi_rate.html', response)		
+
+		else:
+			response.update({'error':True})
+			return render_to_response('taxi_rate.html', response)
+
+@login_required
+@user_passes_test(taxi_check)
+def taxi_rate_view(request):
+	response = {}
+	user_profile = get_object_or_404(UserProfile, user=request.user)
+	response.update({'taxis':TaxiProfile.objects.filter(owner=user_profile)})
+	return render_to_response('taxi_rate_view.html', response)
 
 
 @login_required

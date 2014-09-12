@@ -23,6 +23,13 @@ class TaxiProfile(models.Model):
 	def __unicode__(self):
 		return str(self.display_name) 
 
+	def get_rate(self):
+		try:
+			taxi_rate = TaxiRate.objects.get(taxi=self)
+			return taxi_rate.rate
+		except:
+			return None	
+
 class TaxiRate(models.Model):
 	taxi = models.ForeignKey(TaxiProfile)
 	rate = models.CharField(max_length=100, null=True, blank=True)
