@@ -3,5 +3,6 @@ from wetaxi.taxi.models import *
 
 admin.site.register(TaxiType)
 admin.site.register(TaxiBookingSchedule)
+admin.site.register(DriverProfile)
 
 

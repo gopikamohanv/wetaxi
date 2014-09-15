@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from wetaxi.static_items.models import Country, State, District, Circle
 from wetaxi.users.models import UserProfile
 from wetaxi.wetaxiconfigs.user_types import UserType
-from wetaxi.taxi.forms import TaxiAddForm, TaxiIconForm, TaxiRateForm, UpdateProfileForm
+from wetaxi.taxi.forms import TaxiAddForm, TaxiIconForm, TaxiRateForm, UpdateProfileForm, DriverProfileForm
 from wetaxi.taxi.models import * 
 
 import os.path
@@ -287,6 +287,43 @@ def update_profile(request):
 		else:
 			response.update({'error': True})
 			return render_to_response('update_profile.html', response)
+
+
+@login_required
+@user_passes_test(taxi_check)
+def driver_profile(request):
+	response = {}
+	response.update(csrf(request))
+	user_profile = get_object_or_404(UserProfile, user=request.user)
+	response.update({'user_profile':user_profile})
+
+	if request.method == 'GET':
+		return render_to_response('driver_profile.html', response)
+
+	if request.method == 'POST':
+		form = DriverProfileForm(request.POST)
+
+		if form.is_valid():
+			response.update({'form':form})
+
+			driver_profile = DriverProfile(name = form.cleaned_data['name'], address = form.cleaned_data['address'], email = form.cleaned_data['email'], phone = form.cleaned_data['phone'], mobile = form.cleaned_data['mobile'], added_by = user_profile)
+			driver_profile.save()
+			response.update({'success':True})
+		else:
+			response.update({'form':form})
+			response.update({'form_error':True})
+
+		return render_to_response('driver_profile.html', response)
+
+
+@login_required
+@user_passes_test(taxi_check)
+def drivers_list(request):
+	response = {}
+	user_profile = get_object_or_404(UserProfile, user=request.user)
+	drivers = DriverProfile.objects.filter(added_by=user_profile)
+	response.update({'drivers':drivers})
+	return render_to_response('driver_list.html', response)
 
 					
 @login_required

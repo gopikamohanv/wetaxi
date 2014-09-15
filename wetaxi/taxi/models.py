@@ -39,6 +39,17 @@ class TaxiGellery(models.Model):
 	taxi = models.ForeignKey(TaxiProfile)
 	image_url = models.URLField(max_length=255)	
 
+class DriverProfile(models.Model):
+	name = models.CharField(max_length=255)
+	address = models.TextField()
+	email = models.EmailField(max_length=254)
+	phone = models.CharField(max_length=20,null=True, blank=True)
+	mobile = models.CharField(max_length=20,null=True, blank=True)
+	added_by = models.ForeignKey(UserProfile)
+
+	def __unicode__(self):
+		return self.name
+
 class TaxiBookingSchedule(models.Model):
 	taxi = models.ForeignKey(TaxiProfile)
 	booking_from_date = models.DateTimeField()

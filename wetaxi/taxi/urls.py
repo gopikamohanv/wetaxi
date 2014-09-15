@@ -5,6 +5,8 @@ import wetaxi.taxi.views
 urlpatterns = patterns('',
 	url(r'^dashboard/$', wetaxi.taxi.views.dashboard, name='dashboard'),
 	url(r'^update/profile/$', wetaxi.taxi.views.update_profile, name='update_profile'),
+	url(r'^driver/profile/$', wetaxi.taxi.views.driver_profile, name='driver_profile'),
+	url(r'^drivers/list/$', wetaxi.taxi.views.drivers_list, name='drivers_list'),
 	url(r'^mylist/$', wetaxi.taxi.views.taxi_mylist, name='taxi_mylist'),
 	url(r'^new/$', wetaxi.taxi.views.taxi_new, name='taxi_new'),
 	url(r'^features/$', wetaxi.taxi.views.taxi_features, name='taxi_features'),
