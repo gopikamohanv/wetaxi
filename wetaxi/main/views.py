@@ -143,6 +143,7 @@ def taxi_view(request,pk):
 
 def search_taxi(request):
 	response = {}
+	response.update(csrf(request))
 	response.update({'states': State.objects.all()})
 
 	if 'circle' in request.GET and request.GET['circle']:
@@ -155,6 +156,23 @@ def search_taxi(request):
 	response.update({'user_profiles': UserProfile.objects.filter(circle=circle_obj)})
 	return render_to_response('taxi_list.html', response)	
 	
+def taxi_availability(request, pk):
+	response = {}
+	response.update(csrf(request))
+	taxi = get_object_or_404(TaxiProfile, pk=pk)
+	response.update({'taxi':taxi})
+	if 'login_error' in request.GET and request.GET['login_error']:
+		response.update({'login_error':True})
+	return render_to_response('taxi_availability.html', response)	
+
+def taxi_booking_confirm(request, pk):
+	response = {}
+	response.update(csrf(request))
+	taxi = get_object_or_404(TaxiProfile, pk=pk)
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/taxi/availability/'+ str(pk) + '/?login_error=1')
+		response.update({'login_error':True})
+		return render_to_response('taxi_availability.html', response)
 				
 
 

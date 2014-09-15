@@ -1,0 +1,51 @@
+{% extends 'header.html' %}
+
+{% block content %}
+	<link rel="stylesheet" href="/static/js/calendar/css/calendar.css">
+
+	<div class="col-lg-8">
+		<div class="panel panel-success">
+			<div class="panel panel-heading ">
+				<h5><font style="text-transform: uppercase;">{{taxi.display_name}} | {{taxi.taxi_model}}</font></h5>
+			</div>
+			<div class="panel-body">
+      	<div class="row">
+  				<div class="col-lg-12">									
+						<div class="pull-right">
+        			<div class="btn-group">
+            		<button class="btn btn-xs btn-primary" data-calendar-nav="prev">
+                	<span class="entypo-left-circled"></span>Prev</button>
+            		<button class="btn btn-xs " data-calendar-nav="today">Today</button>
+            		<button class="btn btn-xs btn-primary" data-calendar-nav="next">Next
+                	<span class="entypo-right-circled"></span>
+            		</button>
+        			</div>
+        			<div class="btn-group">
+                <button class="btn btn-xs btn-warning" data-calendar-view="year">Year</button>
+                <button class="btn btn-xs btn-warning active" data-calendar-view="month">Month</button>
+                <button class="btn btn-xs btn-warning" data-calendar-view="week">Week</button>
+                <button class="btn btn-xs btn-warning" data-calendar-view="day">Day</button>
+              </div>
+    				</div>
+    				<br><br>
+						<div id="calendar"></div>
+					</div>
+				</div>	
+			</div>
+			<input type="hidden" id="taxiId" value="{{taxi.id}}">
+		</div>	
+	</div>
+
+{% endblock %}
+
+{% block custom_js %}
+	<script type="text/javascript" src="/static/js/calendar/underscore/underscore-min.js"></script>
+	<script type="text/javascript" src="/static/js/calendar/jstimezonedetect/jstz.min.js"></script>
+	<script type="text/javascript" src="/static/js/calendar/calendar.js"></script>
+	<script type="text/javascript" src="/static/js/calendar/app.js"></script>
+	{% if login_error %}
+	<script>
+		$('#registerModal').modal();
+	</script>
+	{% endif %}
+{% endblock %}
