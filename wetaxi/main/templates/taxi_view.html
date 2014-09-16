@@ -30,9 +30,7 @@
 							{{taxi_profile.taxi_number}}<br>
 							Seat Capacity : {{taxi_profile.seat_capacity}}<br>
 							<strong class="text-success">Rs. {{taxi_profile.get_rate}} / Km</strong><br><br>
-							<a href="">
-								<button class="btn btn-warning">Check Availability</button> <button class="btn btn-success">Book Now</button>
-							</a>	
+							<a href="/taxi/availability/{{taxi_profile.id}}/" class="btn btn-warning schedule">Check Availability</a> <button class="btn btn-success">Book Now</button>
 						</p>	
 					</div>
 				</div>
@@ -42,3 +40,4 @@
 	</div>
 
 {% endblock %}
+

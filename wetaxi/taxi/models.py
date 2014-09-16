@@ -59,6 +59,10 @@ class TaxiBookingSchedule(models.Model):
 	contact_number = models.CharField(max_length=255)
 	contact_address = models.TextField() 
 	booking_id = models.SlugField(db_index=True, unique=True)
+	is_enquiry = models.BooleanField(default=False)
+	is_confirmed = models.BooleanField(default=False)
+	description = models.TextField(blank=True)
+	passenger = models.ForeignKey(UserProfile, null=True, blank=True)
 
 	def __unicode__(self):
 		return str(self.taxi) + ' - ' + str(self.booked_by) + ' - (' + str(self.booking_from_date.date()) + '---' + str(self.booking_to_date.date()) + ')'

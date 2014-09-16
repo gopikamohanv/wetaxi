@@ -95,3 +95,11 @@ STATICFILES_DIRS = (
     os.path.join(os.path.dirname(__file__), 'static'),
 )
 
+#MAIL SERVER
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'taxibucketinfo@gmail.com'
+EMAIL_HOST_PASSWORD = 'taxibucketinfo@123_#'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'TaxiBucket'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

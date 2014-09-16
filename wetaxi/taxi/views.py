@@ -345,9 +345,7 @@ def booking_schedule(request):
 	response.update({'taxis':taxis})
 	return render_to_response('taxi_booking_schedule.html', response)
 
-@login_required
-@user_passes_test(taxi_check)
-def taxi_schedule_events(request):
+def taxi_schedule_events(request): 
 	result = {}
 	result['success'] = '1'
 	result['result'] = []
@@ -368,11 +366,17 @@ def taxi_schedule_events(request):
 	else:
 		pass
 
+	url = ''
+	try:
+		url = request.META['HTTP_REFERER']
+	except:
+		pass
+
 	while from_date <= to_date:
 		x = {}
 		x['start'] = int(time.mktime((from_date - timedelta(days=1)).timetuple()) * 1000)
 		x['end'] = int(time.mktime((from_date - timedelta(days=1)).timetuple()) * 1000)
-		booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi)
+		booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi, is_confirmed=True)
 		if booked:
 			x['title'] = 'Booked (' + str(datetime.datetime.strftime(booked[0].booking_from_date, '%d %b %I:%M %p')) + ' to ' + str(datetime.datetime.strftime(booked[0].booking_to_date, '%d %b %I:%M %p')) + ')'
 			x['class'] = 'event-important'
@@ -381,12 +385,19 @@ def taxi_schedule_events(request):
 			continue
 		else:
 			x['title'] = 'Booking Available'
-			x['class'] = 'event-success'
-			x['url'] = 'javascript:hello(\'' + str(from_date.strftime('%m/%d/%Y')) + ' 10:00 AM \')'
+			x['class'] = 'event-info'
+
+			if url:
+				new_url = url.split('/taxi/availability/')
+				if len(new_url) > 1 and taxi is not None:
+					x['url'] = '/taxi/booking/confirm/' + str(taxi.id) + '/' 
+				else:
+					x['url'] = 'javascript:booking(\'' + str(from_date.strftime('%m/%d/%Y')) + ' 10:00 AM \')'
+			else:
+				x['url'] = 'javascript:booking(\'' + str(from_date.strftime('%m/%d/%Y')) + ' 10:00 AM \')'
 		result['result'].append(x)
 
 		from_date = from_date + timedelta(days=1)
-
 
 	return HttpResponse(
 		json.dumps(
@@ -445,7 +456,7 @@ def taxi_booking(request, pk):
 	if latest_booking_id:
 		booking_id = int(latest_booking_id[0].booking_id) + 1
 
-	booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(to_date, datetime.datetime.min.time()), datetime.datetime.combine(to_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi)
+	booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(to_date, datetime.datetime.min.time()), datetime.datetime.combine(to_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi, is_confirmed=True)
 
 	if booked:
 		return HttpResponse(
