@@ -19,7 +19,8 @@ urlpatterns = patterns('',
     url(r'^taxi/availability/(?P<pk>\w+)/$', views.taxi_availability, name='taxi_availability'),
     url(r'^search/taxi/', views.search_taxi, name='search_taxi'),
     url(r'^taxi/booking/confirm/(?P<pk>\w+)/$', views.taxi_booking_confirm, name='taxi_booking_confirm'),
-
+    url(r'^taxi/send/enquiry/(?P<pk>\w+)/$', views.taxi_send_enquiry, name='taxi_send_enquiry'),
+    url(r'^register/user/', views.register_user, name='register_user'),
 	# Views of taxi app
 	url(r'^taxi/', include('wetaxi.taxi.urls', namespace='taxi')),
 

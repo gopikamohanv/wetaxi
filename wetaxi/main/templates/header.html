@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
     	<meta charset="utf-8">
-    	<title>Wetaxi | Online Taxi Booking</title>
+    	<title>TaxiBucket | Online Taxi Booking</title>
     	<link rel="stylesheet" href="/static/css/bootstrap.css" media="screen">
       <link rel="stylesheet" href="/static/css/bootstrap.min.css" media="screen">
       <link rel="stylesheet" href="/static/css/bootswatch.min.css">
@@ -82,6 +82,43 @@
                       notEmpty: {
                           message: 'The password is required'
                     }
+                  }
+              }
+            }
+          });
+          $('#registerForm').bootstrapValidator({
+              message: 'This value is not valid',
+              feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+              },
+              fields: {
+                email: {
+                  validators: {
+                      notEmpty: {
+                        message: 'The email is required'
+                      },
+                      emailAddress: {
+                        message: 'The input is not a valid email address'
+                      }
+                    }
+              },
+                password: {
+                  validators: {
+                      notEmpty: {
+                          message: 'The password is required'
+                    }
+                  }
+              },
+              mobile: {
+                  validators: {
+                      notEmpty: {
+                          message: 'Mobile number is required'
+                    },
+                    phone: {
+                        message: 'The input is not a valid mobile number'
+                      }
                   }
               }
             }
@@ -179,7 +216,7 @@
         	<div class="row">
       			<div class="col-lg-12">
               <div class="col-lg-6">
-          		  <img src="/static/images/logo.png" width="180px;" height="50px;">
+          		  <img src="/static/images/logo_new.png" width="180px;" height="50px;">
               </div>  
               <div class="col-lg-6">
                 
@@ -311,6 +348,7 @@
                               <input type="password" class="form-control" name="password" />
                           </div>
                       </div>
+                      <input type="hidden" name="taxiId" value="{{taxi.id}}">
                       <div class="form-group">
                           <div class="col-md-5 col-md-offset-3">
                               <button type="submit" class="btn btn-primary">Login</button>
@@ -333,12 +371,24 @@
                   </div>
                   
                   <div class="modal-body">
+                    {% if login_error %}
+                    <div class="alert alert-dismissable alert-info">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                      Please register before booking!
+                    </div>
+                    {% endif %}
+                    {% if email_exists %}
+                      <div class="alert alert-dismissable alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        Email already regsitered!
+                      </div>
+                    {% endif %} 
                     <!-- The form is placed inside the body of modal -->
-                    <form id="loginForm" method="POST" class="form-horizontal" action="/register/">{% csrf_token %}
+                    <form id="registerForm" method="POST" class="form-horizontal" action="/register/user/">{% csrf_token %}
                       <div class="form-group">
                           <label class="col-md-3 control-label">Email</label>
                           <div class="col-md-5">
-                              <input type="text" class="form-control" name="email" />
+                              <input type="text" class="form-control" name="email" value="{{form.email.value}}" />
                           </div>
                       </div>
                       <div class="form-group">
@@ -350,12 +400,14 @@
                       <div class="form-group">
                           <label class="col-md-3 control-label">Mobile</label>
                           <div class="col-md-5">
-                              <input type="text" class="form-control" name="mobiles" />
+                              <input type="text" class="form-control" name="mobile" value="{{form.mobile.value}}" />
                           </div>
                       </div>
+                      <input type="hidden" name="taxiId" value="{{taxi.id}}">
                       <div class="form-group">
                           <div class="col-md-5 col-md-offset-3">
                               <button type="submit" class="btn btn-primary">Register</button>
+                              <a class="btn btn-success loginBtn">Login</a>
                           </div>
                       </div>
                     </form>
@@ -364,6 +416,13 @@
               </div>
             </div>
           </div>
+          <script>
+            $('.loginBtn').click(function(e) {
+              e.preventDefault();
+              $('#registerModal').modal('hide');
+              $('#loginModal').modal();
+            });
+          </script>
 {% block custom_js %}{% endblock %}
 
 {% include 'footer.html' %}          

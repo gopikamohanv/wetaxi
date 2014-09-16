@@ -23,6 +23,13 @@ class TaxiProfile(models.Model):
 	def __unicode__(self):
 		return str(self.display_name) 
 
+	def get_rate(self):
+		try:
+			taxi_rate = TaxiRate.objects.get(taxi=self)
+			return taxi_rate.rate
+		except:
+			return None	
+
 class TaxiRate(models.Model):
 	taxi = models.ForeignKey(TaxiProfile)
 	rate = models.CharField(max_length=100, null=True, blank=True)
@@ -31,6 +38,17 @@ class TaxiRate(models.Model):
 class TaxiGellery(models.Model):
 	taxi = models.ForeignKey(TaxiProfile)
 	image_url = models.URLField(max_length=255)	
+
+class DriverProfile(models.Model):
+	name = models.CharField(max_length=255)
+	address = models.TextField()
+	email = models.EmailField(max_length=254)
+	phone = models.CharField(max_length=20,null=True, blank=True)
+	mobile = models.CharField(max_length=20,null=True, blank=True)
+	added_by = models.ForeignKey(UserProfile)
+
+	def __unicode__(self):
+		return self.name
 
 class TaxiBookingSchedule(models.Model):
 	taxi = models.ForeignKey(TaxiProfile)
@@ -41,6 +59,10 @@ class TaxiBookingSchedule(models.Model):
 	contact_number = models.CharField(max_length=255)
 	contact_address = models.TextField() 
 	booking_id = models.SlugField(db_index=True, unique=True)
+	is_enquiry = models.BooleanField(default=False)
+	is_confirmed = models.BooleanField(default=False)
+	description = models.TextField(blank=True)
+	passenger = models.ForeignKey(UserProfile, null=True, blank=True)
 
 	def __unicode__(self):
 		return str(self.taxi) + ' - ' + str(self.booked_by) + ' - (' + str(self.booking_from_date.date()) + '---' + str(self.booking_to_date.date()) + ')'

@@ -2,7 +2,7 @@
 
 {% block content %}
 	
-	<div class="col-lg-6">
+	<div class="col-lg-9">
 		<div class="panel panel-success">
 			<div class="panel panel-heading ">
 				<h5><font style="text-transform: uppercase;">{{user_profile.user.first_name}}</font></h5>
@@ -20,15 +20,16 @@
 			<hr>
 			{% for taxi_profile in taxi_profiles %}
 				<div class="row">
-					<div class="col-lg-4">
+					<div class="col-lg-3">
 						<img src="{{taxi_profile.icon_url}}" width="160px;" height="120px;">
 					</div>	
-					<div class="col-lg-8">
+					<div class="col-lg-9">
 						<p class="text-muted">
 							<strong>{{taxi_profile.display_name}} | {{taxi_profile.taxi_model}}</strong><br>
 							{{taxi_profile.owner.user.first_name}}<br>
 							{{taxi_profile.taxi_number}}<br>
-							Seat Capacity : {{taxi_profile.seat_capacity}}<br><br>
+							Seat Capacity : {{taxi_profile.seat_capacity}}<br>
+							<strong class="text-success">Rs. {{taxi_profile.get_rate}} / Km</strong><br><br>
 							<a href="/taxi/availability/{{taxi_profile.id}}/" class="btn btn-warning schedule">Check Availability</a> <button class="btn btn-success">Book Now</button>
 						</p>	
 					</div>

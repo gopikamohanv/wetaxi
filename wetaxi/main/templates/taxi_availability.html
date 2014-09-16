@@ -2,6 +2,7 @@
 
 {% block content %}
 	<link rel="stylesheet" href="/static/js/calendar/css/calendar.css">
+  <link rel="stylesheet" href="/static/js/datetimepicker/css/bootstrap-datetimepicker.css">
 
 	<div class="col-lg-8">
 		<div class="panel panel-success">
@@ -10,6 +11,9 @@
 			</div>
 			<div class="panel-body">
       	<div class="row">
+      		<div class="calendar-header col-md-offset-1">
+	          <h3></h3>
+	      	</div>
   				<div class="col-lg-12">									
 						<div class="pull-right">
         			<div class="btn-group">
@@ -35,6 +39,72 @@
 			<input type="hidden" id="taxiId" value="{{taxi.id}}">
 		</div>	
 	</div>
+	
+	<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Booking Details</h3>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12">
+                <form class="form-horizontal" id="bookingForm" method="POST">{% csrf_token %}
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Taxi</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="taxiname" readonly value="{{taxi.display_name}}">
+                    </div>
+                  </div>
+                  <div class="form-group" id="startDateControlGroup">
+                      <label class="col-sm-2 control-label" for="startDate">Start Date</label>
+                      <div class="col-sm-10">
+                        <div class="input-group date datetimepicker">
+                          <input type="text" class="form-control" readonly name="fromDate" id="fromDate" required />
+                          <span class="input-group-addon"><i class="glyphicon-calendar glyphicon"></i></span>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="form-group" id="endDateControlGroup">
+                      <label class="col-sm-2 control-label" for="endDate">End Date</label>
+                      <div class="col-sm-10">
+                        <div class="input-group date datetimepicker">
+                          <input type="text" class="form-control" readonly name="toDate" id="toDate" required />
+                          <span class="input-group-addon"><i class="glyphicon-calendar glyphicon"></i></span>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Name</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" name="name" placeholder="Name" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Route</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" name="route" placeholder="Travel Route" required></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" name="description" placeholder="Description"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-warning submitBtn">Send Booking Enquiry</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
 {% endblock %}
 
@@ -43,9 +113,69 @@
 	<script type="text/javascript" src="/static/js/calendar/jstimezonedetect/jstz.min.js"></script>
 	<script type="text/javascript" src="/static/js/calendar/calendar.js"></script>
 	<script type="text/javascript" src="/static/js/calendar/app.js"></script>
-	{% if login_error %}
+	
+	<script type="text/javascript" src="/static/js/datetimepicker/js/moment.js"></script>
+  <script type="text/javascript" src="/static/js/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
+	{% if login_error or email_exists %}
 	<script>
-		$('#registerModal').modal();
+		$('#registerModal').modal({
+      backdrop:'static',
+      keyboard: false
+    }); 
 	</script>
 	{% endif %}
+	{% if register_success %}
+	<script>
+		$('#bookingModal').modal({
+      backdrop:'static',
+      keyboard: false
+    });
+	</script>
+	{% endif %}
+	<script>
+		function booking(date){
+      $('#bookingModal').modal({
+        backdrop:'static',
+        keyboard: false
+      }); 
+      $('#fromDate').val(date);
+      $('#toDate').val('');
+      $('#calendarModal').modal('hide');
+    }
+    $(function() {
+      $('.datetimepicker').datetimepicker();
+    });
+    $('#bookingForm').submit(function(e) {
+    	e.preventDefault();
+      var btn = $(this).find('.submitBtn');
+    	if ($('#fromDate').val() == ''){
+    		alert('From date is empty');
+    		return false;
+    	}
+    	if ($('#toDate').val() == ''){
+    		alert('From date is empty');
+    		return false;
+    	}
+      btn.attr('disabled', 'disabled');
+      btn.html('Please wait..');
+    	$.post("/taxi/send/enquiry/{{taxi.id}}/", $(this).serialize())
+			.done(function(data) {
+        btn.html('Send Booking Enquiry');
+        btn.removeAttr('disabled');
+				if (!data.status){
+          alert(data.message);
+        }
+        else{
+          alert(data.message);
+          $('#bookingModal').modal('hide');
+        }
+			})
+			.fail(function() {
+        btn.html('Send Booking Enquiry');
+        btn.removeAttr('disabled');
+				alert('An error occured, please try again!!')
+			})
+    });
+	</script>
 {% endblock %}

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from wetaxi.static_items.models import Country, State, District, Circle
 from wetaxi.users.models import UserProfile
 from wetaxi.wetaxiconfigs.user_types import UserType
-from wetaxi.taxi.forms import TaxiAddForm, TaxiIconForm, TaxiRateForm, UpdateProfileForm
+from wetaxi.taxi.forms import TaxiAddForm, TaxiIconForm, TaxiRateForm, UpdateProfileForm, DriverProfileForm
 from wetaxi.taxi.models import * 
 
 import os.path
@@ -213,10 +213,39 @@ def taxi_rate(request):
 			else:
 				return HttpResponseRedirect('/taxi/rate/')
 			
-			if 'taxitype' in request.POST and request.POST['taxitype']:
-				taxitype = request.POST['taxitype']
+			if 'taxi' in request.POST and request.POST['taxi']:
+				taxi = request.POST['taxi']
 			else:
 				return HttpResponseRedirect('/taxi/rate/')
+
+			if 'taxi_rate' in request.POST and request.POST['taxi_rate']:
+				taxi_rate = request.POST['taxi_rate']
+			else:
+				return HttpResponseRedirect('/taxi/rate/')
+
+			taxi_obj = get_object_or_404(TaxiProfile, taxi_number=taxi)
+			try:
+				rate = TaxiRate()
+				rate.taxi = taxi_obj
+				rate.rate = taxi_rate
+				rate.save()	
+			except:
+				raise Http404
+			else:
+				response.update({'success':True})
+				return render_to_response('taxi_rate.html', response)		
+
+		else:
+			response.update({'error':True})
+			return render_to_response('taxi_rate.html', response)
+
+@login_required
+@user_passes_test(taxi_check)
+def taxi_rate_view(request):
+	response = {}
+	user_profile = get_object_or_404(UserProfile, user=request.user)
+	response.update({'taxis':TaxiProfile.objects.filter(owner=user_profile)})
+	return render_to_response('taxi_rate_view.html', response)
 
 
 @login_required
@@ -258,6 +287,43 @@ def update_profile(request):
 		else:
 			response.update({'error': True})
 			return render_to_response('update_profile.html', response)
+
+
+@login_required
+@user_passes_test(taxi_check)
+def driver_profile(request):
+	response = {}
+	response.update(csrf(request))
+	user_profile = get_object_or_404(UserProfile, user=request.user)
+	response.update({'user_profile':user_profile})
+
+	if request.method == 'GET':
+		return render_to_response('driver_profile.html', response)
+
+	if request.method == 'POST':
+		form = DriverProfileForm(request.POST)
+
+		if form.is_valid():
+			response.update({'form':form})
+
+			driver_profile = DriverProfile(name = form.cleaned_data['name'], address = form.cleaned_data['address'], email = form.cleaned_data['email'], phone = form.cleaned_data['phone'], mobile = form.cleaned_data['mobile'], added_by = user_profile)
+			driver_profile.save()
+			response.update({'success':True})
+		else:
+			response.update({'form':form})
+			response.update({'form_error':True})
+
+		return render_to_response('driver_profile.html', response)
+
+
+@login_required
+@user_passes_test(taxi_check)
+def drivers_list(request):
+	response = {}
+	user_profile = get_object_or_404(UserProfile, user=request.user)
+	drivers = DriverProfile.objects.filter(added_by=user_profile)
+	response.update({'drivers':drivers})
+	return render_to_response('driver_list.html', response)
 
 					
 @login_required
@@ -310,7 +376,7 @@ def taxi_schedule_events(request):
 		x = {}
 		x['start'] = int(time.mktime((from_date - timedelta(days=1)).timetuple()) * 1000)
 		x['end'] = int(time.mktime((from_date - timedelta(days=1)).timetuple()) * 1000)
-		booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi)
+		booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi, is_confirmed=True)
 		if booked:
 			x['title'] = 'Booked (' + str(datetime.datetime.strftime(booked[0].booking_from_date, '%d %b %I:%M %p')) + ' to ' + str(datetime.datetime.strftime(booked[0].booking_to_date, '%d %b %I:%M %p')) + ')'
 			x['class'] = 'event-important'
@@ -390,7 +456,7 @@ def taxi_booking(request, pk):
 	if latest_booking_id:
 		booking_id = int(latest_booking_id[0].booking_id) + 1
 
-	booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(to_date, datetime.datetime.min.time()), datetime.datetime.combine(to_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi)
+	booked = TaxiBookingSchedule.objects.filter(Q(booking_from_date__range=(datetime.datetime.combine(from_date, datetime.datetime.min.time()), datetime.datetime.combine(from_date, datetime.datetime.max.time()))) | Q(booking_to_date__range=(datetime.datetime.combine(to_date, datetime.datetime.min.time()), datetime.datetime.combine(to_date, datetime.datetime.max.time()))) | Q(booking_from_date__lte=from_date, booking_to_date__gte=from_date), taxi=taxi, is_confirmed=True)
 
 	if booked:
 		return HttpResponse(
