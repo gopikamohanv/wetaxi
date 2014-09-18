@@ -1,0 +1,57 @@
+{% extends 'taxi_base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/jasny-bootstrap.css" media="screen">
+<link rel="stylesheet" href="/static/css/jasny-bootstrap.min.css" media="screen">
+<script type="text/javascript" src="/static/js/jasny-bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/jasny-bootstrap.min.js"></script>
+
+<div class="row">
+	<br><br>
+	<div class="col-lg-12">
+		<div class="col-lg-9">
+			
+			{% for booking_enquiry in booking_enquiries %}
+				
+					<div class="col-lg-9">
+						<a href="">
+							<div class="panel panel-primary text-left no-boder">
+								<div class="panel-header green">
+									<br>
+					                <h4>Booking Enquiry Summary</h4>
+					            </div>
+					        	<div class="panel-body">
+					        		{{booking_enquiry.taxi.display_name}} | {{booking_enquiry.taxi.taxi_number}}<br><br>
+					            	<table class="table table-bordered">
+					            		<tr>
+					            			<td>Booking Id</td>
+					            			<td>{{booking_enquiry.booking_id}}</td>
+					            		</tr>
+					            		<tr>
+					            			<td>Date</td>
+					            			<td> <span style="color:orange">From</span> {{booking_enquiry.booking_from_date}} <span style="color:orange">to</span> {{booking_enquiry.booking_to_date}} </td>
+					            		</tr>
+					            		<tr>
+					            			<td>Journey Description</td>
+					            			<td>{{booking_enquiry.route}} {{booking_enquiry.description}} </td>
+					            		</tr>
+					            		<tr>
+					            			<td>Customer Name</td><td>{{booking_enquiry.contact_person}}</td>
+					            		</tr>
+					            		<tr>
+					            			<td>Contact Details</td><td>{{booking_enquiry.contact_number}} <p>{{booking_enquiry.contact_address}}</td>
+					            		</tr>
+
+					            	</table>  
+					            	<a href="" class="btn btn-success schedule">Confirm Booking</a> <a href="" class="btn btn-warning schedule">Cancel Enquiry</a>
+					            </div>
+					            
+			        		</div>
+			    		</a>    
+					</div>
+			{% endfor %}
+		</div>	
+	</div>
+</div>
+
+{% endblock %}

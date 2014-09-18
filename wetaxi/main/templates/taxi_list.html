@@ -15,7 +15,9 @@
                 </div>  
                 <div class="panel-body yellow">  
                   {% with user_profile.taxiprofile_set.all|first as icon %}
-                    <img src="{{icon.icon_url}}" width="180px;" height="140px;">
+                  <div id="gallery" class="non-immediate-parent-container2">
+                    <img src="{{icon.icon_url}}" class="resizeme">
+                  </div>  
                   {% endwith %}
                   <br> 
                   <a href="/taxi/view/{{user_profile.pk}}/"><span class="label label-primary">Quick View</span></a>

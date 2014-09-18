@@ -65,7 +65,7 @@ class TaxiBookingSchedule(models.Model):
 	passenger = models.ForeignKey(UserProfile, null=True, blank=True)
 
 	def __unicode__(self):
-		return str(self.taxi) + ' - ' + str(self.booked_by) + ' - (' + str(self.booking_from_date.date()) + '---' + str(self.booking_to_date.date()) + ')'
+		return str(self.taxi) + ' - ' + 	str(self.booking_from_date.date()) + '---' + str(self.booking_to_date.date()) + ')'
 
 
 

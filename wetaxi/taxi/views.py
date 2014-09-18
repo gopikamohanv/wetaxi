@@ -35,6 +35,8 @@ def dashboard(request):
 
 	userprofile = get_object_or_404(UserProfile, user=request.user)
 	response.update({'taxi_list': TaxiProfile.objects.filter(owner=userprofile, is_valid=True)})
+	response.update({'booking_enquiries':TaxiBookingSchedule.objects.filter(taxi__owner=userprofile, is_enquiry=True, is_confirmed=False)})
+	response.update({'booking_enquiry_count':TaxiBookingSchedule.objects.filter(taxi__owner=userprofile, is_enquiry=True, is_confirmed=False).count()})
 	return render_to_response('taxi_index.html', response)
 
 @login_required
@@ -467,7 +469,7 @@ def taxi_booking(request, pk):
 		)
 
 
-	TaxiBookingSchedule.objects.create(taxi=taxi, booking_from_date=from_date, booking_to_date=to_date, contact_person=person, contact_number=number, contact_address=address, route=route, booking_id=booking_id)
+	TaxiBookingSchedule.objects.create(taxi=taxi, booking_from_date=from_date, booking_to_date=to_date, contact_person=person, contact_number=number, contact_address=address, route=route, booking_id=booking_id, is_enquiry=True)
 	return HttpResponse(
 		json.dumps(
 				{'status':True, 'message':'Success: Booking Completed Successfully!!'}
@@ -475,7 +477,16 @@ def taxi_booking(request, pk):
 		content_type = 'application/json'
 	)
 
+@login_required
+@user_passes_test(taxi_check)
+def taxi_booking_enquiry(request):
+	response = {}
+	response.update(csrf(request))
+	user_profile = get_object_or_404(UserProfile, user=request.user)
+	response.update({'booking_enquiries':TaxiBookingSchedule.objects.filter(taxi__owner=user_profile, is_enquiry=True, is_confirmed=False)})
+	response.update({'booking_enquiry_count':TaxiBookingSchedule.objects.filter(taxi__owner=user_profile, is_enquiry=True, is_confirmed=False).count()})
 
+	return render_to_response('taxi_booking_enquiries.html', response)
 
 
 
