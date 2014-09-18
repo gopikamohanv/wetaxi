@@ -17,4 +17,7 @@ urlpatterns = patterns('',
 	url(r'^booking/schedule/$', wetaxi.taxi.views.booking_schedule, name='booking_schedule'),
 	url(r'^schedule/events/$', wetaxi.taxi.views.taxi_schedule_events, name='taxi_schedule_events'),
 	url(r'^booking/(?P<pk>\w+)/$', wetaxi.taxi.views.taxi_booking, name='taxi_booking'),
+	url(r'^enquiry/$', wetaxi.taxi.views.taxi_booking_enquiry, name='taxi_booking_enquiry'),
+	url(r'^cancel/enquiry/(?P<pk>\w+)/$', wetaxi.taxi.views.taxi_cancel_enquiry, name='taxi_cancel_enquiry'),
+	url(r'^confirm/booking/(?P<pk>\w+)/$', wetaxi.taxi.views.taxi_confirm_booking, name='taxi_confirm_booking'),
 )

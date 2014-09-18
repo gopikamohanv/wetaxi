@@ -63,7 +63,7 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-md-12">
-                <form class="form-horizontal" role="form" onsubmit="return formSubmit()">
+                <form class="form-horizontal" role="form" onsubmit="return formSubmit(this)">
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Taxi</label>
                     <div class="col-sm-10">
@@ -114,7 +114,7 @@
                   </div>
                   <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                      <button type="submit" class="btn btn-warning">Book Now</button>
+                      <button type="submit" class="btn btn-warning submitBtn">Book Now</button>
                     </div>
                   </div>
                 </form>
@@ -170,7 +170,8 @@
     $('#bookingModal').on('hidden.bs.modal', function() {
       $('#calendarModal').modal('show');
     });
-    function formSubmit(){
+    function formSubmit(form){
+      var btn = $(form).find('.submitBtn');
       var fromDate = $('#fromDate').val();
       var toDate = $('#toDate').val();
       if (fromDate === ''){
@@ -187,12 +188,16 @@
       var route = $('#route').val();
       var taxi = $('#taxiId').val();
       var csrf = $('#csrf').val();
+      btn.attr('disabled', 'disabled');
+      btn.html('Please wait..');
       $.ajax({
         url: '/taxi/booking/' + taxi + '/',
         type: 'POST',
         data: {from:fromDate, to:toDate, person:person, number:number, address:address, route:route, csrfmiddlewaretoken:csrf},
       })
       .done(function(data) {
+        btn.html('Book Now');
+        btn.removeAttr('disabled');
         if (data.status === false){
           alert(data.message)
         }
@@ -203,6 +208,8 @@
         }
       })
       .fail(function() {
+        btn.html('Book Now');
+        btn.removeAttr('disabled');
         alert('An error occured please try again!!');
         return false
       })

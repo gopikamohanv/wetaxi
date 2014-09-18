@@ -296,7 +296,7 @@ def taxi_send_enquiry(request, pk):
 	message += 'Description: ' + str(description) + '<br>'
 	message += 'From : ' + str(from_date) + '<br>'
 	message += 'To : ' + str(to_date)
-	send_email(subject, message, 'sureshvtt@gmail.com')	
+	send_email(subject, message, taxi.owner.user.email)	
 
 	return HttpResponse(
 		json.dumps(

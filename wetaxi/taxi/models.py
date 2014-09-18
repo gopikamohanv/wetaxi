@@ -62,11 +62,18 @@ class TaxiBookingSchedule(models.Model):
 	is_enquiry = models.BooleanField(default=False)
 	is_confirmed = models.BooleanField(default=False)
 	description = models.TextField(blank=True)
+	enquiry_date = models.DateTimeField(auto_now=True)
 	passenger = models.ForeignKey(UserProfile, null=True, blank=True)
 
 	def __unicode__(self):
-		return str(self.taxi) + ' - ' + str(self.booked_by) + ' - (' + str(self.booking_from_date.date()) + '---' + str(self.booking_to_date.date()) + ')'
+		return str(self.taxi) + ' - ' + 	str(self.booking_from_date.date()) + '---' + str(self.booking_to_date.date()) + ')'
 
+class BookingPayment(models.Model):
+	booking = models.ForeignKey(TaxiBookingSchedule)
+	advance_payment = models.FloatField(null=True, blank=True)
+	total_payment = models.FloatField(null=True, blank=True)
+	is_closed = models.BooleanField(default=False)
+	is_paid = models.BooleanField(default=False)
 
 
 
