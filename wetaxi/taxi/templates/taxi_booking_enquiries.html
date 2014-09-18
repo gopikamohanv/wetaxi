@@ -1,0 +1,239 @@
+{% extends 'taxi_base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/jasny-bootstrap.css" media="screen">
+<link rel="stylesheet" href="/static/css/jasny-bootstrap.min.css" media="screen">
+<script type="text/javascript" src="/static/js/jasny-bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/jasny-bootstrap.min.js"></script>
+
+<div class="row">
+	<br><br>
+	<div class="col-lg-12">
+		<div class="col-lg-9">
+			
+			{% for booking_enquiry in booking_enquiries %}
+				
+					<div class="col-lg-9 enquiry">
+						<a>
+							<div class="panel panel-primary text-left no-boder">
+								<div class="panel-header green">
+									<br>
+					                <h4>Booking Enquiry Summary</h4>
+					            </div>
+					        	<div class="panel-body">
+					        		{{booking_enquiry.taxi.display_name}} | {{booking_enquiry.taxi.taxi_number}}<br><br>
+					            	<table class="table table-bordered">
+					            		<tr>
+					            			<td>Booking Id</td>
+					            			<td>{{booking_enquiry.booking_id}}</td>
+					            		</tr>
+					            		<tr>
+					            			<td>Date</td>
+					            			<td> <span style="color:orange">From</span> {{booking_enquiry.booking_from_date}} <span style="color:orange">to</span> {{booking_enquiry.booking_to_date}} </td>
+					            		</tr>
+					            		<tr>
+					            			<td>Journey Description</td>
+					            			<td>{{booking_enquiry.route}} {{booking_enquiry.description}} </td>
+					            		</tr>
+					            		<tr>
+					            			<td>Customer Name</td><td>{{booking_enquiry.contact_person}}</td>
+					            		</tr>
+					            		<tr>
+					            			<td>Contact Details</td><td>{{booking_enquiry.contact_number}} <p>{{booking_enquiry.contact_address}}</p></td>
+					            		</tr>
+
+					            	</table>  
+					            	</a>
+					            	<button class="btn btn-success confirmBooking" bookingId="{{booking_enquiry.booking_id}}" booking="{{booking_enquiry.id}}">Confirm Booking</button> <button class="btn btn-warning cancelBooking" booking="{{booking_enquiry.id}}">Cancel Enquiry</button>
+					            </div>
+					            
+			        		</div>
+			    
+					</div>
+			{% empty %}
+			<div class="alert alert-info">
+				No enquiries available.
+			</div>
+			{% endfor %}
+		</div>	
+	</div>
+</div>
+	
+	<div class="modal fade" id="bookingConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3>Payment Details</h3>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <form class="form-horizontal bookingFrm" role="form">
+              	<input type="hidden" id="csrf" value="{{csrf_token}}">
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Booking ID</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="bookingId" booking="" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Payment</label>
+                  <div class="col-sm-8">
+                  	<label for="advancePay">
+                  		Advance
+                    	<input type="radio" name="payment" id="advancePay" onClick="showPayment('advance')" required>
+                    </label>
+
+                    <label for="fullPay" class="col-md-offset-1">
+                  		Full
+                    	<input type="radio" name="payment" id="fullPay" onClick="showPayment('full')" required>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+									<div class="col-md-2"></div>
+									<div class="col-md-10" id="advancePayment" style="display:none;">
+	                  <div class="col-sm-6">
+	                    <div class="input-group">
+	                    	<span class="input-group-addon">Rs</span>
+											  <input type="number" id="advance" class="form-control" placeholder="Advance">
+											  <span class="input-group-addon">.00</span>
+											</div>
+	                  </div>
+	                  <div class="col-sm-6">
+	                  	<div class="input-group">
+	                  		<span class="input-group-addon">Rs</span>
+											  <input type="number" id="total" class="form-control" placeholder="Total">
+											  <span class="input-group-addon">.00</span>
+											</div>
+	                  </div>
+	              	</div>
+	              	<div class="col-md-9" id="fullPayment" style="display:none;">
+	                  <div class="col-sm-12">
+	                    <div class="input-group">
+	                    	<span class="input-group-addon">Rs</span>
+											  <input type="number" id="full" class="form-control" placeholder="Full Payment">
+											  <span class="input-group-addon">.00</span>
+											</div>
+	                  </div>
+	              	</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-warning submitBtn">Book Now</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block custom_js %}
+
+<script>
+	var booking_type = ''
+	$('.confirmBooking').click(function(e) {
+		e.preventDefault();
+		var btn = $(this);
+		var bookingId = btn.attr('bookingId');
+		$('#bookingId').val(bookingId)
+		$('#bookingId').attr('booking', btn.attr('booking'))
+		$('#bookingConfirmationModal').modal({
+        backdrop:'static',
+        keyboard: false
+      }); 
+	});
+
+	function showPayment(type){
+		booking_type = type;
+		if (type == 'advance' ){
+			$('#advancePayment').show();
+			$('#fullPayment').hide();
+		}
+		else{
+			$('#advancePayment').hide();
+			$('#fullPayment').show();
+		}
+	}
+
+	$('.bookingFrm').submit(function(e) {
+		e.preventDefault();
+		var btn = $(this).find('.submitBtn'); 
+		var csrf = $('#csrf').val();
+		var advance = $('#advance').val();
+		var total = $('#total').val();
+		var full = $('#full').val();
+		var id = $('#bookingId').attr('booking');
+		var data = {}
+		if (booking_type == 'advance'){
+			if (advance === ''){
+				alert('Advance Payment is required!!');
+				$('#advance').focus();
+				return
+			}
+			if (total === ''){
+				alert('Total Payment is required!!');
+				$('#total').focus();
+				return;
+			}
+			data = {'advance':advance, 'total':total, csrfmiddlewaretoken:csrf}
+		}
+		else{
+			if (full === ''){
+				alert('Full Payment is required!!');
+				$('#full').focus();
+				return;
+			}
+			data = {'advance':'', 'total':full, csrfmiddlewaretoken:csrf}
+		}
+		btn.attr('disabled', 'disabled');
+		$.ajax({
+			url: '/taxi/confirm/booking/' +  id + '/',
+			type: 'POST',
+			data: data,
+		})
+		.done(function() {
+			btn.removeAttr('disabled');
+			$('#bookingConfirmationModal').modal('hide');
+			$('.enquiry').each(function() {
+				if ($(this).find('.confirmBooking').attr('booking') === id ){
+					$(this).find('.confirmBooking').attr('disabled', 'disabled');
+					$(this).find('.confirmBooking').html('Booked');
+				}
+			});
+		})
+		.fail(function() {
+			btn.attr('disabled', 'disabled');
+			alert('An error occured, please try again!!');
+		})		
+	});
+
+	$('.cancelBooking').click(function(e) {
+		e.preventDefault();
+		var btn = $(this)
+		var id = $(this).attr('booking');
+		if (confirm("Are you sure to cancel this Enquiry?")){
+			$.ajax({
+				url: '/taxi/cancel/enquiry/' + id + '/',
+				type: 'GET'
+			})
+			.done(function() {
+					btn.parents('.enquiry').fadeOut('slow');
+					if ($('.enquiry').length <= 1){
+						window.location.reload();
+					}
+			})
+			.fail(function() {
+				alert('An error occured while cancelling, please try again!!');
+			})			
+		}
+	});
+</script>
+
+{% endblock %}

@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
     	<meta charset="utf-8">
-    	<title>Wetaxi | Online Taxi Booking</title>
+    	<title>TaxiBucket | Online Taxi Booking</title>
     	<link rel="stylesheet" href="/static/css/bootstrap.css" media="screen">
       <link rel="stylesheet" href="/static/css/bootstrap.min.css" media="screen">
       <link rel="stylesheet" href="/static/css/bootswatch.min.css">
@@ -12,8 +12,24 @@
       <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
       <script type="text/javascript" src="/static/js/bootstrapValidator.js"></script>
       <script type="text/javascript" src="/static/js/bootstrapValidator.min.js"></script>
+      <script type="text/javascript" src="/static/js/imgscale.jquery.js"></script>
       <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-54802958-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script>
       $(document).ready(function() {
+          $('img.resizeme').imgscale({ 
+            parent : '.non-immediate-parent-container2', 
+            fade : 1000 
+          });
+          
           $('#register_taxi_form').bootstrapValidator({
               fields: {
                   email: {
@@ -77,7 +93,108 @@
               }
             }
           });
+          $('#registerForm').bootstrapValidator({
+              message: 'This value is not valid',
+              feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+              },
+              fields: {
+                email: {
+                  validators: {
+                      notEmpty: {
+                        message: 'The email is required'
+                      },
+                      emailAddress: {
+                        message: 'The input is not a valid email address'
+                      }
+                    }
+              },
+                password: {
+                  validators: {
+                      notEmpty: {
+                          message: 'The password is required'
+                    }
+                  }
+              },
+              mobile: {
+                  validators: {
+                      notEmpty: {
+                          message: 'Mobile number is required'
+                    },
+                    phone: {
+                        message: 'The input is not a valid mobile number'
+                      }
+                  }
+              }
+            }
+          });
+          $('#searchForm').bootstrapValidator({
+              fields: {
+                  state: {
+                      validators: {
+                          greaterThan: {
+                              message : 'State is required and cannot be empty',
+                              value : 1
+                          }
+                      }
+                  },
+                  district: {
+                      validators: {
+                          greaterThan: {
+                              message : 'District is required and cannot be empty',
+                              value: 1
+                          }
+                      }
+                  },
+                  circle: {
+                      validators: {
+                          greaterThan: {
+                              message : 'Circle is required and cannot be empty', 
+                              value : 1
+                          }
+                      }
+                  }
+              }    
+          });
       });
+      function stateChanged(option)
+      {
+        if (option==0)
+        {
+          return;
+        }
+        $.ajax({
+                    type    : 'GET',
+                    url     : '/ajax/district/',
+                    cache   : false,
+                    data    : "state=" + option,
+                    success : function(data,textStatus)
+                    {
+                        $("#inputDistrict").html(data);
+                    },
+                    error   : function(data,textStatus){alert("Error connecting to Wetaxi Servers. Please check your internet connection and try again.");}
+                });
+      }
+      function districtChanged(option)
+      {
+        if (option==0)
+        {
+          return;
+        }
+        $.ajax({
+                    type    : 'GET',
+                    url     : '/ajax/circle/',
+                    cache   : false,
+                    data    : "district=" + option ,
+                    success : function(data,textStatus)
+                    {
+                        $("#inputCircle").html(data);
+                    },
+                    error   : function(data,textStatus){alert("Error connecting to Wetaxi Servers. Please check your internet connection and try again.");}
+                });
+      }
     </script>
     </head>
     <body>
@@ -85,10 +202,10 @@
         <div class="container">
        		<div class="navbar-collapse collapse" id="navbar-main">
         		<ul class="nav navbar-nav">
-          		<li><a href=""><img src="/static/images/Active-Facebook-Icon.png"></a></li>
-            	<li><a href=""><img src="/static/images/Active-Google-Plus-Icon.png"></a></li>
-          		<li><a href=""><img src="/static/images/Active-Twitter-Icon.png"></a></li>
-          		<li><a href=""><img src="/static/images/Active-YouTube-Icon.png"></a></li>
+          		<li><a href=""><img src="/static/images/Active-Facebook-icon.png"></a></li>
+            	<li><a href=""><img src="/static/images/Active-Google-Plus-icon.png"></a></li>
+          		<li><a href=""><img src="/static/images/Active-Twitter-icon.png"></a></li>
+          		<li><a href=""><img src="/static/images/Active-YouTube-icon.png"></a></li>
           	</ul>
 					  <ul class="nav navbar-nav navbar-right">
               <li><a href="" target="_blank"><span class="glyphicon glyphicon-phone-alt"><strong>Support(24/7) : 9995299833</strong></span> </a></li>
@@ -106,7 +223,7 @@
         	<div class="row">
       			<div class="col-lg-12">
               <div class="col-lg-6">
-          		  <img src="/static/images/logo.png" width="180px;" height="50px;">
+          		  <img src="/static/images/logo_new.png" width="180px;" height="50px;">
               </div>  
               <div class="col-lg-6">
                 
@@ -119,7 +236,7 @@
                   <li><a href="#profile" class="label label-success">Packages</a></li>
                   <li><a href="#profile" class="label label-success">Contact Us</a></li>
                 </ul> 
-              </div>
+             </div>
             </div>  
           </div> 
           
@@ -129,30 +246,33 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="alert alert-warning bs-component">
-                    <form class="form-horizontal">
+                    <form class="form-horizontal" id="searchForm" action="/search/taxi/" method="GET">
                       <fieldset>
                         <legend><i>TAXI SEARCH...</i></legend>
                           <div class="form-group">
                             <label for="inputState" class="col-lg-3 control-label">State</label>
                             <div class="col-lg-9">
-                                <select class="form-control" id="select">
-                                  <option>Select</option>
+                                <select class="form-control" id="inputState" onChange="stateChanged(this.value);" name="state">
+                                  <option value="0">Select</option>
+                                  {% for state in states %}
+                                    <option value="{{state.pk}}">{{state.state}}</option>
+                                  {% endfor %}  
                                 </select>
                             </div>
                           </div>
                           <div class="form-group">
                             <label for="inputDistrict" class="col-lg-3 control-label">District</label>
                             <div class="col-lg-9">
-                                <select class="form-control" id="select">
-                                  <option>Select</option>
+                                <select class="form-control" id="inputDistrict" onChange="districtChanged(this.value)" name="district">
+                                  <option value="0">Select</option>
                                 </select>
                             </div>
                           </div>
                           <div class="form-group">
                             <label for="inputCircle" class="col-lg-3 control-label">Circle</label>
                             <div class="col-lg-9">
-                                <select class="form-control" id="select">
-                                  <option>Select</option>
+                                <select class="form-control" id="inputCircle" name="circle">
+                                  <option value="0">Select</option>
                                 </select>
                             </div>
                           </div>    
@@ -219,7 +339,7 @@
                       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                       <h4 class="modal-title">Wetaxi | Login</h4>
                   </div>
-
+                  
                   <div class="modal-body">
                     <!-- The form is placed inside the body of modal -->
                     <form id="loginForm" method="POST" class="form-horizontal" action="/login/">{% csrf_token %}
@@ -235,6 +355,7 @@
                               <input type="password" class="form-control" name="password" />
                           </div>
                       </div>
+                      <input type="hidden" name="taxiId" value="{{taxi.id}}">
                       <div class="form-group">
                           <div class="col-md-5 col-md-offset-3">
                               <button type="submit" class="btn btn-primary">Login</button>
@@ -246,4 +367,69 @@
               </div>
             </div>
           </div>
+
+          <div class="row">
+            <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                      <h4 class="modal-title">TaxiBucket | Register</h4>
+                  </div>
+                  
+                  <div class="modal-body">
+                    {% if login_error %}
+                    <div class="alert alert-dismissable alert-info">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                      Please register before booking!
+                    </div>
+                    {% endif %}
+                    {% if email_exists %}
+                      <div class="alert alert-dismissable alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        Email already regsitered!
+                      </div>
+                    {% endif %} 
+                    <!-- The form is placed inside the body of modal -->
+                    <form id="registerForm" method="POST" class="form-horizontal" action="/register/user/">{% csrf_token %}
+                      <div class="form-group">
+                          <label class="col-md-3 control-label">Email</label>
+                          <div class="col-md-5">
+                              <input type="text" class="form-control" name="email" value="{{form.email.value}}" />
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-md-3 control-label">Password</label>
+                          <div class="col-md-5">
+                              <input type="password" class="form-control" name="password" />
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-md-3 control-label">Mobile</label>
+                          <div class="col-md-5">
+                              <input type="text" class="form-control" name="mobile" value="{{form.mobile.value}}" />
+                          </div>
+                      </div>
+                      <input type="hidden" name="taxiId" value="{{taxi.id}}">
+                      <div class="form-group">
+                          <div class="col-md-5 col-md-offset-3">
+                              <button type="submit" class="btn btn-primary">Register</button>
+                              <a class="btn btn-success loginBtn">Login</a>
+                          </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script>
+            $('.loginBtn').click(function(e) {
+              e.preventDefault();
+              $('#registerModal').modal('hide');
+              $('#loginModal').modal();
+            });
+          </script>
+{% block custom_js %}{% endblock %}
+
 {% include 'footer.html' %}          

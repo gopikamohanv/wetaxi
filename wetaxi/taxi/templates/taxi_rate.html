@@ -2,6 +2,37 @@
 
 {% block content %}
 <script>
+$(document).ready(function() {
+    	$('#taxi_rate_form').bootstrapValidator({
+        	fields: {
+        		taxitype: {
+        			validators: {
+        				notEmpty: {
+        					message : 'The taxi type is required and cannot be empty'
+        				},
+        				greaterThan: {
+        					message : 'The taxi type is required and cannot be empty',
+        					value : 1
+        				}
+        			}
+        		},
+        		taxi: {
+        			validators: {
+        				notEmpty: {
+        					message : 'The taxi is required and cannot be empty'
+        				},
+        			}
+        		},
+        		taxi_rate: {
+        			validators: {
+        				notEmpty : {
+        					message : 'Taxi rate is required and cannot be empty'
+        				}
+        			}
+        		}
+            }   
+    	});
+    });	
 function typeSelected(option)
 {
 	var user = document.getElementById("user").value;
@@ -26,13 +57,14 @@ function typeSelected(option)
 <div class="row">
 	<div class="col-lg-12">
 		<div class="col-lg-9">
+			<br><br>
 			{% if success %}
 				<div class="alert alert-success">
 					Successfully added your taxi rate!
 				</div>
 			{% endif %}
 			<div class="bs-component">
-    			<form id="taxi_rate_form" class="form-horizontal" action="/taxi/rate/" enctype="multipart/form-data" method="POST">{% csrf_token %}
+    			<form id="taxi_rate_form" class="form-horizontal" action="/taxi/rate/" method="POST">{% csrf_token %}
         			<input type="hidden" name="user_type" value="1">
         			<input type="hidden" id="user" name="user" value="{{userprofile.pk}}">
 					<fieldset>
@@ -63,16 +95,10 @@ function typeSelected(option)
       								<input type="text" class="form-control" id="inputRate" placeholder="Taxi Rate" name="taxi_rate">
     							</div>
 							</div>
-							<div class="form-group">
-								<label for="inputRateAC" class="col-lg-3 control-label">Taxi Rate AC(Optional)</label>
-								<div class="col-lg-9">
-      								<input type="text" class="form-control" id="inputRateAC" placeholder="Taxi Rate With AC" name="taxi_rate_ac">
-    							</div>
-							</div>
 						</div>
     					<div class="form-group">
 							<div class="col-lg-12">
-								<button type="submit" class="btn btn-warning btn-block">Add Taxi Icon</button>
+								<button type="submit" class="btn btn-warning btn-block">Add Taxi Rate</button>
 							</div>
 						</div>   
 					</fieldset>
@@ -80,6 +106,18 @@ function typeSelected(option)
         	</div>
         </div>
 		<div class="col-lg-3">
+			<br><br><br><br>
+			<a href="/taxi/rate/view/">
+					<div class="panel panel-primary text-center no-boder">
+			            <div class="panel-body yellow">
+			                <i class="fa fa-thumbs-up fa-3x"></i>
+			            </div>
+			            <div class="panel-footer">
+			                <span class="panel-eyecandy-title">View Taxi Rate
+			                </span>
+			            </div>
+			        </div>
+		    	</a>
 		</div>
 	</div>	
 </div>

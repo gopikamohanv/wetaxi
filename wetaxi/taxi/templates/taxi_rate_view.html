@@ -1,0 +1,61 @@
+{% extends 'taxi_base.html' %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="col-lg-9">
+			</br></br>
+			<h4>TAXI RATE LIST</h4>
+			<table class="table table-bordered">
+				<th>
+					<td>SL.NO</td>
+					<td>TAXI</td>
+					<td>TAXI NUMBER</td>
+					<td>TAXI RATE</td>
+					<td>ACTION</td>
+				</th>
+				{% for taxi in taxis %}
+					<tr>
+						<td>{{forloop.counter}}
+						<td>{{taxi.display_name}}</td>
+						<td>{{taxi.taxi_number}}</td>
+						<td>Rs. {{taxi.get_rate}} / Km</td>
+						<td><a href="">Edit</a></td>
+					</tr>
+				{% endfor %}				
+			</table>
+        </div>
+		<div class="col-lg-3">
+			<br><br><br><br>
+			<div class="col-lg-12">
+				<a href="/taxi/rate/view/">
+					<div class="panel panel-primary text-center no-boder">
+			            <div class="panel-body yellow">
+			                <i class="fa fa-thumbs-up fa-3x"></i>
+			            </div>
+			            <div class="panel-footer">
+			                <span class="panel-eyecandy-title">View Taxi Rate
+			                </span>
+			            </div>
+			        </div>
+		    	</a>
+		    </div>
+		    <div class="col-lg-12">
+				<a href="/taxi/rate/">
+					<div class="panel panel-primary text-center no-boder">
+			        	<div class="panel-body green">
+			                <i class="fa fa-bar-chart-o fa-3x"></i>
+			            </div>
+			            <div class="panel-footer">
+			                <span class="panel-eyecandy-title">Add Taxi Rate
+			                </span>
+			            </div>
+	        		</div>
+	    		</a>    
+			</div>	
+		</div>
+	</div>	
+</div>
+
+{% endblock %}
